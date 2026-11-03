@@ -3762,19 +3762,11 @@
         });
       });
 
-      // --- SECTION C: FOOTER CASCADE REVEAL ---
-      gsap.fromTo('.footer-col',
-        { y: 70, opacity: 0, rotateX: 18 },
-        {
-          y: 0, opacity: 1, rotateX: 0, stagger: 0.1, ease: 'none',
-          scrollTrigger: {
-            trigger: '#siteFooter',
-            start: 'top 95%',
-            end: 'top 70%',
-            scrub: 1
-          }
-        }
-      );
+      // --- SECTION C: FOOTER CASCADE (Safe reveal, visible by default)
+      gsap.from('.footer-col', {
+        y: 35, opacity: 0.7, duration: 0.8, stagger: 0.08, ease: 'power2.out',
+        scrollTrigger: { trigger: '#siteFooter', start: 'top 95%', once: true }
+      });
 
       // --- SECTION D: NAVBAR ACTIVE HIGHLIGHT ---
       document.querySelectorAll('.nav-link[data-nav]').forEach(link => {
