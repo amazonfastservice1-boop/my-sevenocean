@@ -15,3 +15,4 @@ Run any static file server:
 python -m http.server 8080
 ```
 Open [http://localhost:8080](http://localhost:8080) in your browser.
+
