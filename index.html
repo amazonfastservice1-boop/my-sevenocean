@@ -272,25 +272,26 @@
 
     .hero-header {
       position: absolute;
-      top: 106px;
+      top: clamp(75px, 12vh, 110px);
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
-      width: min(760px, 90vw);
+      width: min(820px, 92vw);
       z-index: 12;
       transition:
         opacity 0.75s var(--ease-water),
         transform 0.85s var(--ease-water),
         filter 0.75s var(--ease-water);
+      pointer-events: auto;
     }
 
     .hero-header h1 {
-      font-size: clamp(2.35rem, 4.2vw, 3.8rem);
+      font-size: clamp(1.85rem, 3.8vw, 3.6rem);
       font-weight: 800;
-      line-height: 1.12;
+      line-height: 1.15;
       letter-spacing: -0.03em;
       color: #0b2234;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .hero-header h1 span {
@@ -2026,6 +2027,97 @@
       background: linear-gradient(90deg, #38bdf8, #ffffff);
       border-radius: 999px;
     }
+
+    /* ============================================================
+       HIGH-ZOOM (125%, 150%) & LAPTOP SCREEN FIT STYLES
+       ============================================================ */
+    @media (max-height: 800px) {
+      .top-nav {
+        padding: 12px 32px;
+      }
+      .brand-logo {
+        width: 38px;
+        height: 38px;
+      }
+      .brand-logo svg {
+        width: 20px;
+        height: 20px;
+      }
+      .hero-header {
+        top: 76px;
+      }
+      .hero-header h1 {
+        font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+        margin-bottom: 8px;
+      }
+      .hero-header p {
+        font-size: 13px;
+        line-height: 1.45;
+        max-width: 500px;
+      }
+      .carousel-viewport {
+        bottom: 30px;
+        height: 48vh;
+      }
+      .product-slot {
+        width: clamp(200px, 18vw, 260px);
+        height: clamp(220px, 30vh, 280px);
+      }
+      .hero-product-stage {
+        top: 52%;
+        width: clamp(280px, 32vw, 420px);
+        height: clamp(280px, 48vh, 420px);
+      }
+      .detail-panel {
+        top: 52%;
+        width: min(390px, 42vw);
+      }
+      .detail-brand-title {
+        font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+      }
+      .detail-variant-name {
+        font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+        margin-bottom: 10px;
+      }
+      .detail-price {
+        font-size: clamp(1.4rem, 2vw, 1.8rem);
+        margin-bottom: 12px;
+      }
+      .detail-description {
+        font-size: 12.5px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+      }
+      .action-row {
+        margin-bottom: 14px;
+      }
+      .buy-now-btn {
+        padding: 10px 28px;
+        font-size: 12.5px;
+      }
+    }
+
+    @media (max-height: 650px) {
+      .top-nav {
+        padding: 8px 24px;
+      }
+      .hero-header {
+        top: 60px;
+      }
+      .hero-header h1 {
+        font-size: 1.5rem;
+      }
+      .hero-header p {
+        display: none; /* Hide subtitle on extreme zoom to keep clean alignment */
+      }
+      .carousel-viewport {
+        bottom: 16px;
+        height: 44vh;
+      }
+      .scroll-down-cue {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3697,6 +3789,17 @@
       document.addEventListener('DOMContentLoaded', initCinematicScrollSections);
     } else {
       initCinematicScrollSections();
+
+    // Brand Logo Click: Smoothly reload website & preloader
+    const brandLogoEl = document.getElementById('brandLogo');
+    if (brandLogoEl) {
+      brandLogoEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        window.location.reload();
+      });
+    }
+
     }
   </script>
 </body>
