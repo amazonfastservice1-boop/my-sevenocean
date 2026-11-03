@@ -1729,10 +1729,18 @@
       margin: 0 auto 52px;
     }
 
+    .testimonial-inner {
+      position: relative;
+      max-width: 1220px;
+      margin: 0 auto;
+      perspective: 1600px;
+    }
+
     .testimonial-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
+      gap: 28px;
+      transform-style: preserve-3d;
     }
 
     .testimonial-card {
@@ -1741,12 +1749,20 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 24px;
-      padding: 30px 28px;
-      border-radius: 24px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 249, 255, 0.92) 100%);
+      padding: 34px 30px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(235, 248, 255, 0.92) 100%);
       border: 1.5px solid rgba(255, 255, 255, 0.95);
-      box-shadow: 0 18px 40px rgba(7, 36, 56, 0.1), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 20px 50px rgba(7, 36, 56, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.95);
       will-change: transform, opacity;
+      transform-style: preserve-3d;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      cursor: default;
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(14, 165, 233, 0.6);
+      box-shadow: 0 30px 65px rgba(2, 132, 199, 0.22);
     }
 
     .testimonial-card::before {
@@ -3216,31 +3232,81 @@
         return;
       }
 
-      // Scroll-scrubbed: animation progress follows the scrollbar both ways
+      // 1. Heading 3D flip-in with smooth scroll-scrub
       gsap.fromTo('[data-gsap="head"]',
-        { y: 90, opacity: 0, scale: 0.94 },
-        { y: 0, opacity: 1, scale: 1, ease: 'none',
-          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top 85%', end: 'top 40%', scrub: 0.8 } });
+        { y: 100, opacity: 0, rotateX: 25, scale: 0.92 },
+        { y: 0, opacity: 1, rotateX: 0, scale: 1, ease: 'power2.out',
+          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top 88%', end: 'top 45%', scrub: 1 } });
 
+      // 2. 3D Kinetic Floating Testimonial Cards: Fan out from deep Z-space like 3D Deck & Gallery!
       const tCards = gsap.utils.toArray('.testimonial-card');
-      const fromX = [-120, 0, 120];
-      const fromY = [140, 200, 140];
-      const fromR = [-6, 0, 6];
+      // Left card angles left, Middle drops deep and elevates, Right card angles right
+      const startProps = [
+        { x: -160, y: 180, z: -400, rotateY: 28, rotateX: 18, rotateZ: -10, opacity: 0 },
+        { x: 0,    y: 260, z: -550, rotateY: 0,  rotateX: 32, rotateZ: 0,   opacity: 0 },
+        { x: 160,  y: 180, z: -400, rotateY: -28, rotateX: 18, rotateZ: 10, opacity: 0 }
+      ];
+
       tCards.forEach((card, i) => {
+        // Scroll entry fan-in
         gsap.fromTo(card,
-          { x: fromX[i % 3], y: fromY[i % 3], rotation: fromR[i % 3], opacity: 0, scale: 0.9 },
-          { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, ease: 'power2.out',
-            scrollTrigger: { trigger: '.testimonial-grid', start: 'top 92%', end: 'top 35%', scrub: 1 } });
-        // slow parallax drift while the section scrolls past
+          startProps[i],
+          {
+            x: 0, y: 0, z: 0, rotateY: 0, rotateX: 0, rotateZ: 0, opacity: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: '.testimonial-grid',
+              start: 'top 95%',
+              end: 'top 40%',
+              scrub: 1.2
+            }
+          }
+        );
+
+        // Continuous luxury liquid wave parallax as user scrolls through
         gsap.to(card, {
-          yPercent: i === 1 ? -9 : 6, ease: 'none',
-          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
+          yPercent: i === 1 ? -18 : 14,
+          rotateZ: i === 0 ? -2.5 : (i === 2 ? 2.5 : 0),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#sectionTestimonials',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.5
+          }
+        });
+
+        // Interactive 3D tilt on mouse hover for luxury tactile feel
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const dx = (e.clientX - rect.left) / rect.width - 0.5;
+          const dy = (e.clientY - rect.top) / rect.height - 0.5;
+          gsap.to(card, {
+            rotateY: dx * 16,
+            rotateX: -dy * 16,
+            z: 35,
+            duration: 0.35,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            rotateY: 0,
+            rotateX: 0,
+            z: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
       });
 
-      // ocean ripples expand with scroll
+      // 3. Expanding acoustic ocean caustics & ripples on scroll
       gsap.fromTo('.testimonial-ripples i',
-        { scale: 0.7 },
-        { scale: 1.15, ease: 'none', stagger: 0.08,
+        { scale: 0.5, opacity: 0.2 },
+        { scale: 1.45, opacity: 0.85, ease: 'none', stagger: 0.12,
           scrollTrigger: { trigger: '#sectionTestimonials', start: 'top bottom', end: 'bottom top', scrub: 1 } });
 
       // stats count up as you scroll
