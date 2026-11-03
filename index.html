@@ -1923,7 +1923,7 @@
       left: 0;
       right: 0;
       width: 100%;
-      height: 50.5%;
+      height: 50.1%;
       display: flex;
       z-index: 1;
     }
@@ -1939,13 +1939,13 @@
     .stair-bar {
       flex: 1;
       height: 100%;
-      background: linear-gradient(180deg, #072438 0%, #0369a1 100%);
+      background: linear-gradient(180deg, #04131f 0%, #072438 55%, #0284c7 100%);
       transform-origin: top center;
       will-change: transform;
     }
 
     .stair-layer.bottom .stair-bar {
-      background: linear-gradient(0deg, #072438 0%, #0284c7 100%);
+      background: linear-gradient(0deg, #04131f 0%, #072438 55%, #0284c7 100%);
       transform-origin: bottom center;
     }
 
@@ -3531,68 +3531,74 @@
     // =========================================================================
     // 0. DOUBLE STAIRS PRELOADER ANIMATION (Dual Direction Staircase)
     // =========================================================================
+    let preloaderSafetyTimer = null;
     function playDoubleStairsPreloader() {
+      const preloader = document.getElementById('stairsPreloader');
+      if (!preloader) return;
+      if (preloaderSafetyTimer) clearTimeout(preloaderSafetyTimer);
+
+      // Guaranteed failsafe: never allow preloader to stay stuck beyond 2.6 seconds
+      preloaderSafetyTimer = setTimeout(() => {
+        preloader.classList.add('loaded');
+      }, 2600);
+
+      if (!window.gsap) {
+        setTimeout(() => preloader.classList.add('loaded'), 900);
+        return;
+      }
+
       const topBars = gsap.utils.toArray('#topStairs .stair-bar');
       const bottomBars = gsap.utils.toArray('#bottomStairs .stair-bar');
-      const preloader = document.getElementById('stairsPreloader');
       const centerContent = document.getElementById('preloaderCenter');
       const logo = document.getElementById('preloaderLogo');
       const name = document.getElementById('preloaderName');
       const sub = document.getElementById('preloaderSub');
       const progress = document.getElementById('preloaderProgress');
 
-      // Timeline with high-precision dual direction easing
-      const tl = gsap.timeline({
-        onComplete: () => {
-          if (preloader) preloader.classList.add('loaded');
-          // Trigger water drop audio note on entrance completion
-          if (typeof playWaterDrop === 'function') playWaterDrop(620);
-        }
-      });
+      gsap.killTweensOf([topBars, bottomBars, centerContent, logo, name, sub, progress]);
 
-      // Step 1: Reset preloader container & initial state
-      if (preloader) preloader.classList.remove('loaded');
+      preloader.classList.remove('loaded');
       gsap.set(centerContent, { scale: 1, opacity: 1, y: 0 });
       gsap.set(progress, { width: '0%' });
       gsap.set(topBars, { scaleY: 1, transformOrigin: 'top center' });
       gsap.set(bottomBars, { scaleY: 1, transformOrigin: 'bottom center' });
-      gsap.set(logo, { scale: 0, rotation: -45, opacity: 0 });
-      gsap.set(name, { y: 25, opacity: 0 });
-      gsap.set(sub, { y: 15, opacity: 0 });
+      gsap.set(logo, { scale: 0.6, rotation: -20, opacity: 0 });
+      gsap.set(name, { y: 18, opacity: 0 });
+      gsap.set(sub, { y: 12, opacity: 0 });
 
-      // Step 2: Animate brand text & emblem in center
-      tl.to(logo, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.8)' })
-        .to(name, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, '-=0.35')
-        .to(sub, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' }, '-=0.25')
-        .to(progress, { width: '100%', duration: 0.85, ease: 'power2.inOut' }, '-=0.4')
-        // Pause momentarily for full luxury brand impression
-        .to({}, { duration: 0.25 })
-        // Step 3: Fade out center content cleanly
-        .to(centerContent, { scale: 0.92, opacity: 0, y: -20, duration: 0.45, ease: 'power2.in' })
-        // Step 4: DUAL DIRECTION STAIRCASE RETRACT!
-        // Top stairs slide upward with stagger from left to right
+      const tl = gsap.timeline({
+        onComplete: () => {
+          if (preloaderSafetyTimer) clearTimeout(preloaderSafetyTimer);
+          preloader.classList.add('loaded');
+          if (typeof playWaterDrop === 'function') playWaterDrop(620);
+        }
+      });
+
+      tl.to(logo, { scale: 1, rotation: 0, opacity: 1, duration: 0.45, ease: 'back.out(1.7)' })
+        .to(name, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, '-=0.25')
+        .to(sub, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out' }, '-=0.2')
+        .to(progress, { width: '100%', duration: 0.55, ease: 'power2.inOut' }, '-=0.3')
+        .to(centerContent, { scale: 0.92, opacity: 0, y: -16, duration: 0.3, ease: 'power2.in' }, '+=0.1')
         .to(topBars, {
           scaleY: 0,
-          duration: 0.85,
+          duration: 0.65,
           ease: 'power4.inOut',
-          stagger: {
-            each: 0.08,
-            from: 'start'
-          }
-        }, '-=0.15')
-        // Bottom stairs slide downward simultaneously with synchronized offset
+          stagger: { each: 0.06, from: 'start' }
+        }, '-=0.1')
         .to(bottomBars, {
           scaleY: 0,
-          duration: 0.85,
+          duration: 0.65,
           ease: 'power4.inOut',
-          stagger: {
-            each: 0.08,
-            from: 'start'
-          }
+          stagger: { each: 0.06, from: 'start' }
         }, '<');
     }
 
     function initCinematicScrollSections() {
+      if (!window.gsap || !window.ScrollTrigger) {
+        playDoubleStairsPreloader();
+        setTimeout(initCinematicScrollSections, 100);
+        return;
+      }
       playDoubleStairsPreloader();
       if (window.location.hash) {
         const hashTarget = document.querySelector(window.location.hash);
@@ -3604,11 +3610,6 @@
             applyGalleryScrollReveal(true);
           }, 150);
         }
-      }
-
-      if (!window.gsap || !window.ScrollTrigger) {
-        setTimeout(initCinematicScrollSections, 100);
-        return;
       }
       gsap.registerPlugin(ScrollTrigger);
 
