@@ -1,0 +1,3277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Seven Ocean — Pure Marine Luxury & 3D Spatial Experiences</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-top: #f0faff;
+      --bg-bottom: #e0f5fe;
+      --ocean-primary: #0284c7;
+      --ocean-cyan: #06b6d4;
+      --ocean-deep: #072438;
+      --text-dark: #092133;
+      --text-muted: #4e6d83;
+      --ease-water: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: var(--text-dark);
+      background: #ffffff;
+    }
+
+    /* Fixed ambient aquatic stage backdrop */
+    .ambient-backdrop-fixed {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% 50%, #ffffff 0%, #ffffff 36%, var(--bg-top) 75%, var(--bg-bottom) 100%);
+    }
+
+    .ambient-dynamic-aura {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(720px circle at 28% 54%, var(--aura-left, rgba(14, 165, 233, 0.12)), transparent 70%),
+        radial-gradient(620px circle at 75% 28%, var(--aura-right, rgba(56, 189, 248, 0.10)), transparent 70%),
+        linear-gradient(180deg, rgba(224, 247, 254, 0.6) 0%, transparent 40%, rgba(186, 230, 253, 0.45) 100%);
+      transition: all 0.9s var(--ease-water);
+    }
+
+    .caustic-rays {
+      position: fixed;
+      top: -20%;
+      left: -15%;
+      right: -15%;
+      height: 60%;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        repeating-linear-gradient(
+          112deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(56, 189, 248, 0.04) 6%,
+          rgba(255, 255, 255, 0.4) 10%,
+          rgba(14, 165, 233, 0.02) 14%,
+          rgba(255, 255, 255, 0) 19%
+        );
+      will-change: transform;
+      animation: causticDrift 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes causticDrift {
+      0% { transform: translateX(-3%) rotate(-1deg) scaleY(1); }
+      100% { transform: translateX(3%) rotate(1deg) scaleY(1.1); }
+    }
+
+    #waterCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 19;
+    }
+
+    /* ============================================================
+       TOP STICKY NAVIGATION BAR
+       ============================================================ */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 18px 56px;
+      max-width: 1480px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.14);
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-group.right {
+      justify-content: flex-end;
+    }
+
+    .nav-link {
+      background: none;
+      border: none;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      opacity: 0.85;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .nav-link:hover {
+      opacity: 1;
+      color: var(--ocean-primary);
+      transform: translateY(-1px);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 55%, #082f49 100%);
+      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.28), inset 0 2px 4px rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      transition: transform 0.4s var(--ease-out-expo);
+      text-decoration: none;
+    }
+
+    .brand-logo:hover {
+      transform: scale(1.08) rotate(6deg);
+    }
+
+    .brand-logo svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(8, 47, 73, 0.05);
+      transition: all 0.25s ease;
+    }
+
+    .nav-pill-btn:hover {
+      border-color: var(--ocean-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.14);
+    }
+
+    .bag-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #0284c7, #082f49);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* ============================================================
+       SECTION 1: HERO & HORIZONTAL PRODUCT LINEUP WITH SPOTLIGHT
+       ============================================================ */
+    .section-hero-showcase {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .water-ripples {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .ripple-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(14, 165, 233, 0.10);
+      box-shadow: inset 0 0 40px rgba(56, 189, 248, 0.05);
+      transform: translate(-50%, -50%);
+      transition: all 1.1s var(--ease-water);
+    }
+
+    .ripple-ring.r1 {
+      width: 56vw;
+      height: 56vw;
+      left: 50%;
+      top: 24%;
+    }
+
+    .ripple-ring.r2 {
+      width: 78vw;
+      height: 78vw;
+      left: 50%;
+      top: 28%;
+      border-color: rgba(14, 165, 233, 0.05);
+    }
+
+    .section-hero-showcase.detail-active .ripple-ring.r1 {
+      left: 28%;
+      top: 54%;
+      width: 44vw;
+      height: 44vw;
+      border-color: rgba(14, 165, 233, 0.18);
+    }
+
+    .section-hero-showcase.detail-active .ripple-ring.r2 {
+      left: 28%;
+      top: 54%;
+      width: 62vw;
+      height: 62vw;
+    }
+
+    .hero-header {
+      position: absolute;
+      top: 106px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      width: min(760px, 90vw);
+      z-index: 12;
+      transition:
+        opacity 0.75s var(--ease-water),
+        transform 0.85s var(--ease-water),
+        filter 0.75s var(--ease-water);
+    }
+
+    .hero-header h1 {
+      font-size: clamp(2.35rem, 4.2vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: #0b2234;
+      margin-bottom: 16px;
+    }
+
+    .hero-header h1 span {
+      background: linear-gradient(135deg, #082f49 0%, #0284c7 65%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-header p {
+      font-size: clamp(0.92rem, 1.1vw, 1.04rem);
+      line-height: 1.65;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+
+    .section-hero-showcase.detail-active .hero-header {
+      opacity: 0.08;
+      transform: translate(-50%, -26px) scale(0.96);
+      filter: blur(1.5px);
+      pointer-events: none;
+    }
+
+    .carousel-viewport {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 64px;
+      height: 52vh;
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+      padding: 0 8vw;
+      transition: opacity 0.5s ease;
+    }
+
+    .carousel-viewport::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-viewport.dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+    }
+
+    .section-hero-showcase.detail-active .carousel-viewport {
+      pointer-events: none;
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: center;
+      gap: clamp(26px, 3.8vw, 60px);
+      padding: 20px 4vw;
+      min-width: max-content;
+    }
+
+    .product-slot {
+      position: relative;
+      width: clamp(245px, 22.5vw, 325px);
+      height: clamp(265px, 33vh, 345px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 28px;
+      transition: transform 0.45s var(--ease-out-expo);
+    }
+
+    .product-slot::before {
+      content: '';
+      position: absolute;
+      inset: -12%;
+      background: radial-gradient(circle, #ffffff 48%, rgba(255,255,255,0) 76%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .product-slot::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      width: 58%;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(2, 132, 199, 0.18) 0%, rgba(2, 132, 199, 0) 75%);
+      transition: transform 0.45s var(--ease-out-expo), opacity 0.45s ease;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .product-slot:hover {
+      transform: translateY(-12px) scale(1.04);
+    }
+
+    .slot-img-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slot-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.02);
+      transition: transform 0.5s var(--ease-out-expo);
+      will-change: transform;
+    }
+
+    .slot-caption {
+      position: absolute;
+      bottom: -10px;
+      z-index: 3;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .product-slot:hover .slot-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slot-caption span {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(12, 34, 51, 0.88);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      box-shadow: 0 6px 16px rgba(8, 47, 73, 0.18);
+    }
+
+    .section-hero-showcase.detail-active .product-slot {
+      opacity: 0;
+      transform: translateY(40px) scale(0.82);
+      pointer-events: none;
+      transition: opacity 0.45s ease, transform 0.55s var(--ease-water);
+    }
+
+    .scroll-down-cue {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.22);
+      box-shadow: 0 8px 24px rgba(8, 47, 73, 0.06);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      animation: bounceCue 2s ease-in-out infinite;
+    }
+
+    @keyframes bounceCue {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, 6px); }
+    }
+
+    .section-hero-showcase.detail-active .scroll-down-cue {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .showcase-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .section-hero-showcase.detail-active .showcase-layer {
+      pointer-events: auto;
+    }
+
+    .peek-prev-product {
+      position: absolute;
+      left: -8vw;
+      top: 55%;
+      width: clamp(240px, 24vw, 340px);
+      height: clamp(280px, 38vh, 380px);
+      transform: translateY(-50%) scale(0.75) translateX(-120px);
+      opacity: 0;
+      filter: blur(6px);
+      transition:
+        transform 0.85s var(--ease-water),
+        opacity 0.85s var(--ease-water),
+        filter 0.85s var(--ease-water);
+      cursor: pointer;
+      z-index: 18;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .peek-prev-product::before {
+      content: '';
+      position: absolute;
+      inset: -15%;
+      background: radial-gradient(circle, #ffffff 45%, rgba(255,255,255,0) 75%);
+      z-index: 0;
+    }
+
+    .peek-prev-product img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .section-hero-showcase.detail-active .peek-prev-product {
+      opacity: 0.72;
+      transform: translateY(-50%) scale(0.88) translateX(0);
+    }
+
+    .hero-product-stage {
+      position: absolute;
+      left: 28%;
+      top: 54%;
+      width: clamp(340px, 38vw, 540px);
+      height: clamp(340px, 56vh, 540px);
+      transform: translate(-50%, -50%);
+      z-index: 22;
+      pointer-events: none;
+    }
+
+    .stage-actor {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform, opacity, filter;
+      transform-origin: center center;
+    }
+
+    .stage-actor::before {
+      content: '';
+      position: absolute;
+      inset: -14%;
+      background: radial-gradient(circle, #ffffff 50%, rgba(255,255,255,0) 76%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .stage-actor img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.03);
+    }
+
+    @keyframes waterFloat {
+      0%, 100% { transform: translate3d(0, 0px, 0) scale(1); }
+      50% { transform: translate3d(0, -10px, 0) scale(1.015); }
+    }
+
+    .stage-actor.settled img {
+      animation: waterFloat 4.2s ease-in-out infinite;
+    }
+
+    .detail-panel {
+      position: absolute;
+      left: 56%;
+      top: 53%;
+      transform: translateY(-50%) translateX(48px);
+      width: min(430px, 38vw);
+      z-index: 26;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.6s var(--ease-water),
+        transform 0.75s var(--ease-water);
+    }
+
+    .section-hero-showcase.detail-active .detail-panel {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+      pointer-events: auto;
+    }
+
+    .detail-panel.switching .detail-anim-item {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .detail-anim-item {
+      transition:
+        opacity 0.42s var(--ease-water),
+        transform 0.48s var(--ease-water);
+    }
+
+    .detail-anim-item.d1 { transition-delay: 0.04s; }
+    .detail-anim-item.d2 { transition-delay: 0.09s; }
+    .detail-anim-item.d3 { transition-delay: 0.14s; }
+    .detail-anim-item.d4 { transition-delay: 0.19s; }
+    .detail-anim-item.d5 { transition-delay: 0.24s; }
+
+    .detail-brand-title {
+      font-size: clamp(1.45rem, 2.2vw, 2.05rem);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: #0b2234;
+    }
+
+    .detail-variant-name {
+      font-size: clamp(1.35rem, 2vw, 1.85rem);
+      font-weight: 700;
+      line-height: 1.22;
+      color: var(--ocean-primary);
+      margin-bottom: 18px;
+      transition: color 0.4s ease;
+    }
+
+    .detail-price {
+      font-size: clamp(1.75rem, 2.5vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0b2234;
+      margin-bottom: 18px;
+    }
+
+    .product-swatches {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .swatch-btn {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: var(--swatch-color);
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.45), 0 2px 6px rgba(8, 47, 73, 0.15);
+      transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
+    }
+
+    .swatch-btn::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .swatch-btn:hover {
+      transform: scale(1.16);
+    }
+
+    .swatch-btn.active {
+      transform: scale(1.12);
+    }
+
+    .swatch-btn.active::after {
+      border-color: #0c2233;
+    }
+
+    .swatch-btn .swatch-tip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: #0c2233;
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .swatch-btn:hover .swatch-tip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .detail-description {
+      font-size: 13.5px;
+      line-height: 1.68;
+      color: var(--text-muted);
+      margin-bottom: 26px;
+      max-width: 390px;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .buy-now-btn {
+      padding: 13px 38px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #0b2234 0%, #0369a1 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(3, 105, 161, 0.24);
+      transition: transform 0.28s var(--ease-out-expo), box-shadow 0.28s ease;
+    }
+
+    .buy-now-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(3, 105, 161, 0.34);
+    }
+
+    .back-lineup-btn {
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(12, 34, 51, 0.16);
+      background: rgba(255, 255, 255, 0.8);
+      color: #0b2234;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .back-lineup-btn:hover {
+      border-color: #0284c7;
+      color: #0284c7;
+      background: #f0f9ff;
+    }
+
+    .mini-product-dock {
+      position: absolute;
+      bottom: 24px;
+      left: 56%;
+      z-index: 28;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(14, 165, 233, 0.16);
+      box-shadow: 0 10px 30px rgba(8, 47, 73, 0.07);
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity 0.55s var(--ease-water), transform 0.55s var(--ease-water);
+    }
+
+    .section-hero-showcase.detail-active .mini-product-dock {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .dock-item {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1.5px solid transparent;
+      background: #ffffff;
+      padding: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.28s var(--ease-out-expo), border-color 0.25s ease;
+    }
+
+    .dock-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .dock-item:hover {
+      transform: translateY(-4px) scale(1.06);
+    }
+
+    .dock-item.active {
+      border-color: var(--ocean-primary);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+    }
+
+    /* ============================================================
+       SECTION 2: SCROLL-DRIVEN 3D KINETIC DECK
+       ============================================================ */
+    .scroll-track-container {
+      position: relative;
+      width: 100vw;
+      height: 250vh;
+      z-index: 25;
+    }
+
+    .deck-sticky-stage {
+      position: sticky;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 90px;
+      padding-bottom: 30px;
+      perspective: 1400px;
+      perspective-origin: 50% 46%;
+    }
+
+    .deck-header-wrap {
+      text-align: center;
+      width: min(840px, 92vw);
+      z-index: 30;
+    }
+
+    .deck-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(224, 242, 254, 0.88);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .deck-title {
+      font-size: clamp(2.3rem, 4vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      color: #071c2b;
+      margin-bottom: 10px;
+    }
+
+    .deck-title span {
+      background: linear-gradient(135deg, #072438 0%, #0284c7 55%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .deck-subtitle {
+      font-size: clamp(0.9rem, 1.05vw, 1.02rem);
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 12px;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+
+    .scroll-morph-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(14, 165, 233, 0.22);
+      box-shadow: 0 8px 24px rgba(7, 36, 56, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: #0369a1;
+    }
+
+    .scroll-meter-track {
+      width: 80px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(14, 165, 233, 0.16);
+      overflow: hidden;
+    }
+
+    .scroll-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7, #06b6d4);
+      border-radius: 999px;
+      transition: width 0.08s ease;
+    }
+
+    .deck-viewport-box {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+    }
+
+    .kinetic-deck-anchor {
+      position: relative;
+      width: 360px;
+      height: 380px;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .deck-caustic-shadow {
+      position: absolute;
+      top: 75%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotateX(75deg);
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.28) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 72%);
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .kinetic-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 310px;
+      height: 385px;
+      border-radius: 26px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      will-change: transform, opacity, filter, box-shadow;
+      transition: box-shadow 0.4s ease;
+    }
+
+    .card-glass-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.88) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 20px 45px rgba(7, 36, 56, 0.12),
+        inset 0 1px 3px rgba(255, 255, 255, 0.85),
+        inset 0 -2px 6px rgba(14, 165, 233, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px 24px;
+      transition: all 0.4s ease;
+    }
+
+    .kinetic-card:hover .card-glass-body {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 0 28px 60px rgba(2, 132, 199, 0.25);
+    }
+
+    .card-glow-blob {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--card-glow, rgba(14, 165, 233, 0.25)) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .card-tag {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--card-color, #0284c7);
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .card-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .card-img-zone {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 8px 0;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      max-height: 215px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.05);
+      transition: transform 0.4s var(--ease-water);
+    }
+
+    .kinetic-card:hover .card-img {
+      transform: translateY(-8px) scale(1.06);
+    }
+
+    .card-footer-info {
+      z-index: 2;
+      border-top: 1px solid rgba(14, 165, 233, 0.12);
+      padding-top: 14px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #071c2b;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-formula {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-price-tag {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--card-color, #0284c7);
+    }
+
+    .deck-bottom-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 30;
+    }
+
+    .deck-status-text {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .deck-marquee {
+      display: flex;
+      align-items: center;
+      gap: clamp(28px, 4vw, 54px);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8da4b5;
+      opacity: 0.85;
+    }
+
+    .deck-marquee div {
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .deck-marquee div:hover {
+      color: var(--ocean-primary);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       SECTION 3: "SCROLL IMAGES REVEAL 001" (Skiper32 / Codrops 3D Grid)
+       Featuring 20 luxury marine product cards in 3D parallax!
+       ============================================================ */
+    .gallery-scroll-container {
+      position: relative;
+      width: 100vw;
+      height: 350vh; /* Pinned scroll space for deep 3D flight */
+      z-index: 35;
+      background: transparent;
+    }
+
+    .gallery-sticky-stage {
+      position: sticky;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+      perspective-origin: 50% 50%;
+    }
+
+    /* Center Impactful Editorial Title */
+    .gallery-center-headline {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: min(860px, 92vw);
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .gallery-spec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(14, 165, 233, 0.28);
+      box-shadow: 0 10px 28px rgba(8, 47, 73, 0.08);
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .gallery-title-main {
+      font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: #071c2b;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .gallery-title-main span {
+      background: linear-gradient(135deg, #072438 0%, #0284c7 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gallery-subtitle {
+      font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 16px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .gallery-scroll-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.22);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0369a1;
+    }
+
+    .gallery-progress-bar {
+      width: 75px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(14, 165, 233, 0.2);
+      overflow: hidden;
+    }
+
+    .gallery-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7, #06b6d4);
+      border-radius: 999px;
+    }
+
+    /* 3D Spatial Canvas for the 20 Product Cards */
+    .gallery-3d-space {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+
+    .reveal-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: clamp(210px, 17vw, 270px);
+      height: clamp(260px, 22vw, 330px);
+      margin-left: calc(-1 * clamp(210px, 17vw, 270px) / 2);
+      margin-top: calc(-1 * clamp(260px, 22vw, 330px) / 2);
+      border-radius: 22px;
+      transform-style: preserve-3d;
+      pointer-events: auto;
+      cursor: pointer;
+      will-change: transform, opacity, filter;
+    }
+
+    .reveal-card-inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.88) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 18px 40px rgba(7, 36, 56, 0.12),
+        inset 0 1px 3px rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 18px;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .reveal-card:hover .reveal-card-inner {
+      transform: scale(1.08);
+      border-color: rgba(56, 189, 248, 0.8);
+      box-shadow:
+        0 26px 60px rgba(2, 132, 199, 0.28),
+        inset 0 2px 6px rgba(255, 255, 255, 0.95);
+      z-index: 100;
+    }
+
+    .reveal-card-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--tile-glow, rgba(14, 165, 233, 0.22)) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .reveal-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .reveal-card-tag {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tile-color, #0284c7);
+      padding: 2.5px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .reveal-card-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .reveal-card-img-wrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 6px 0;
+    }
+
+    .reveal-card-img {
+      width: 100%;
+      height: 100%;
+      max-height: 170px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: contrast(1.04);
+      transition: transform 0.4s ease;
+    }
+
+    .reveal-card:hover .reveal-card-img {
+      transform: translateY(-6px) scale(1.08);
+    }
+
+    .reveal-card-footer {
+      z-index: 2;
+      border-top: 1px solid rgba(14, 165, 233, 0.12);
+      padding-top: 10px;
+    }
+
+    .reveal-card-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #071c2b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .reveal-card-price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .reveal-card-price {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--tile-color, #0284c7);
+    }
+
+    /* Cart Drawer */
+    .ocean-drawer-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(390px, 90vw);
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.97);
+      border-left: 1px solid rgba(14, 165, 233, 0.2);
+      box-shadow: -20px 0 50px rgba(7, 36, 56, 0.15);
+      z-index: 80;
+      transform: translateX(102%);
+      transition: transform 0.5s var(--ease-water);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 24px;
+    }
+
+    .ocean-drawer-panel.open {
+      transform: translateX(0);
+    }
+
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 36, 56, 0.25);
+      z-index: 75;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .flying-drop {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #38bdf8 55%, #0284c7 100%);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+      z-index: 120;
+      pointer-events: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 960px) {
+      .top-nav {
+        padding: 16px 20px;
+      }
+      .nav-group {
+        gap: 14px;
+      }
+      .hero-product-stage {
+        left: 50%;
+        top: 34%;
+        width: clamp(230px, 55vw, 320px);
+        height: clamp(230px, 34vh, 320px);
+      }
+      .detail-panel {
+        left: 50%;
+        top: 71%;
+        transform: translate(-50%, -50%);
+        width: min(420px, 88vw);
+        text-align: center;
+      }
+      .section-hero-showcase.detail-active .detail-panel {
+        transform: translate(-50%, -50%);
+      }
+      .product-swatches,
+      .action-row {
+        justify-content: center;
+      }
+      .detail-description {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .mini-product-dock,
+      .peek-prev-product,
+      .deck-marquee {
+        display: none;
+      }
+      .kinetic-card {
+        width: 245px;
+        height: 330px;
+      }
+      .kinetic-deck-anchor {
+        width: 260px;
+        height: 340px;
+      }
+    }
+
+    /* ============================================================
+       FAQ + FOOTER (My Seven Ocean distribution)
+       ============================================================ */
+    .faq-section {
+      position: relative;
+      z-index: 30;
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg-top) 100%);
+      padding: 110px 24px 90px;
+    }
+
+    .faq-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .faq-eyebrow {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(224, 242, 254, 0.9);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .faq-title {
+      font-size: clamp(2rem, 3.6vw, 3.1rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: #071c2b;
+      margin-bottom: 12px;
+    }
+
+    .faq-title span {
+      background: linear-gradient(135deg, #072438 0%, #0284c7 55%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .faq-lead {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.65;
+      font-weight: 500;
+      max-width: 600px;
+      margin-bottom: 36px;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1.5px solid rgba(14, 165, 233, 0.16);
+      box-shadow: 0 8px 22px rgba(7, 36, 56, 0.05);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .faq-item:hover,
+    .faq-item[open] {
+      border-color: rgba(14, 165, 233, 0.5);
+      box-shadow: 0 12px 28px rgba(2, 132, 199, 0.12);
+    }
+
+    .faq-item summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #0b2234;
+    }
+
+    .faq-item summary::-webkit-details-marker { display: none; }
+
+    .faq-item summary::after {
+      content: '+';
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0284c7, #082f49);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      transition: transform 0.25s ease;
+    }
+
+    .faq-item[open] summary::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-item p {
+      padding: 0 24px 22px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.72;
+      font-weight: 500;
+    }
+
+    .site-footer {
+      position: relative;
+      z-index: 30;
+      background: linear-gradient(180deg, #072438 0%, #04131f 100%);
+      color: #cfe9f7;
+      padding: 72px 24px 28px;
+    }
+
+    .footer-grid {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+      gap: 40px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-brand .brand-logo {
+      flex: none;
+    }
+
+    .footer-about {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #9cc3d9;
+      max-width: 340px;
+    }
+
+    .footer-col h4 {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      margin-bottom: 16px;
+    }
+
+    .footer-col a,
+    .footer-col span {
+      display: block;
+      font-size: 13.5px;
+      color: #cfe9f7;
+      text-decoration: none;
+      margin-bottom: 11px;
+      opacity: 0.85;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .footer-col a:hover {
+      opacity: 1;
+      color: #38bdf8;
+    }
+
+    .footer-bottom {
+      max-width: 1180px;
+      margin: 48px auto 0;
+      padding-top: 22px;
+      border-top: 1px solid rgba(56, 189, 248, 0.18);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12.5px;
+      color: #7aa5bd;
+    }
+
+    @media (max-width: 860px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .faq-item summary { padding: 16px 18px; }
+      .faq-item p { padding: 0 18px 18px; }
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+       ============================================================ */
+    .testimonial-section {
+      position: relative;
+      z-index: 30;
+      background:
+        radial-gradient(720px circle at 18% 30%, rgba(14, 165, 233, 0.14), transparent 70%),
+        radial-gradient(640px circle at 85% 70%, rgba(56, 189, 248, 0.14), transparent 70%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%, var(--bg-top) 100%);
+      padding: 110px 24px 90px;
+      overflow: hidden;
+    }
+
+    .testimonial-ripples {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .testimonial-ripples i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 50%;
+      border: 1px solid rgba(14, 165, 233, 0.14);
+      box-shadow: inset 0 0 40px rgba(56, 189, 248, 0.06);
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+
+    .testimonial-ripples i:nth-child(1) { width: 56vw; height: 56vw; }
+    .testimonial-ripples i:nth-child(2) { width: 78vw; height: 78vw; border-color: rgba(14, 165, 233, 0.08); }
+    .testimonial-ripples i:nth-child(3) { width: 100vw; height: 100vw; border-color: rgba(14, 165, 233, 0.05); }
+
+    .testimonial-inner { z-index: 1; }
+
+    .nav-link.is-active {
+      opacity: 1;
+      color: var(--ocean-primary);
+    }
+
+    @media (max-width: 1180px) {
+      .nav-group { gap: 16px; }
+      .nav-link { font-size: 12px; }
+      .top-nav { padding: 18px 28px; }
+    }
+
+    .testimonial-inner {
+      position: relative;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .testimonial-head {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 52px;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .testimonial-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 30px 28px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 249, 255, 0.92) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 18px 40px rgba(7, 36, 56, 0.1), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+      will-change: transform, opacity;
+    }
+
+    .testimonial-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 8px;
+      right: 22px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 84px;
+      line-height: 1;
+      color: rgba(14, 165, 233, 0.14);
+      pointer-events: none;
+    }
+
+    .testimonial-stars {
+      color: #0ea5e9;
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 14px;
+    }
+
+    .testimonial-quote {
+      font-size: 15px;
+      line-height: 1.75;
+      font-weight: 500;
+      color: #0b2234;
+    }
+
+    .testimonial-person {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(14, 165, 233, 0.14);
+    }
+
+    .testimonial-avatar {
+      flex: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 55%, #082f49 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(2, 132, 199, 0.25);
+    }
+
+    .testimonial-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #071c2b;
+    }
+
+    .testimonial-role {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .testimonial-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 44px;
+      text-align: center;
+    }
+
+    .testimonial-stat strong {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      font-weight: 800;
+      color: #0369a1;
+    }
+
+    .testimonial-stat span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .testimonial-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .testimonial-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Fixed Ambient Aquatic Stage Backdrop -->
+  <div class="ambient-backdrop-fixed"></div>
+  <div class="ambient-dynamic-aura" id="ambientDynamicAura"></div>
+  <div class="caustic-rays"></div>
+
+  <!-- Interactive Water Droplets Canvas -->
+  <canvas id="waterCanvas"></canvas>
+
+  <!-- Sticky Top Navigation Bar -->
+  <header class="top-nav">
+    <nav class="nav-group left">
+      <a href="#sectionShowcase" class="nav-link" data-nav="sectionShowcase">Products</a>
+      <a href="#sectionDeckTrigger" class="nav-link" data-nav="sectionDeckTrigger">Collection</a>
+      <a href="#sectionGalleryTrigger" class="nav-link" data-nav="sectionGalleryTrigger">Archive</a>
+      <a href="#sectionTestimonials" class="nav-link" data-nav="sectionTestimonials">Reviews</a>
+      <a href="#sectionFaq" class="nav-link" data-nav="sectionFaq">FAQs</a>
+    </nav>
+
+    <a href="#sectionShowcase" class="brand-logo" id="brandLogo" title="Back to Top">
+      <svg viewBox="0 0 24 24">
+        <path d="M2 13.5c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" />
+        <path d="M2 18c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" opacity="0.65" />
+        <path d="M12 3c2.2 3 3.5 5.2 3.5 7a3.5 3.5 0 1 1-7 0c0-1.8 1.3-4 3.5-7z" />
+      </svg>
+    </a>
+
+    <nav class="nav-group right">
+      <button class="nav-pill-btn" id="soundToggleBtn">
+        <span id="soundIcon">🔊</span>
+        <span id="soundLabel">Aqua Sound</span>
+      </button>
+      <button class="nav-pill-btn" id="openBagBtn">
+        <span>Ocean Bag</span>
+        <span class="bag-badge" id="bagCountBadge">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ============================================================
+       SECTION 1: HERO & HORIZONTAL PRODUCT LINEUP WITH SPOTLIGHT
+       ============================================================ -->
+  <section class="section-hero-showcase" id="sectionShowcase">
+    <div class="water-ripples">
+      <div class="ripple-ring r1"></div>
+      <div class="ripple-ring r2"></div>
+    </div>
+
+    <div class="hero-header" id="heroHeader">
+      <h1>Elevate Your<br /><span>Oceanic Ritual</span></h1>
+      <p>
+        Experience bio-fermented deep sea botanicals and pure glacial mineral hydration,
+        sculpted by nature for luminous, weightless skin vitality.
+      </p>
+    </div>
+
+    <div class="carousel-viewport" id="carouselViewport">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+
+    <a href="#sectionDeckTrigger" class="scroll-down-cue" id="scrollDownCue">
+      <span>Scroll Down to 3D Deck</span>
+      <span>&darr;</span>
+    </a>
+
+    <div class="showcase-layer" id="showcaseLayer">
+      <div class="peek-prev-product" id="peekPrevProduct" title="Switch to previous product">
+        <img id="peekPrevImg" src="" alt="Previous Product" />
+      </div>
+
+      <div class="hero-product-stage" id="heroProductStage"></div>
+
+      <div class="detail-panel" id="detailPanel">
+        <h2 class="detail-brand-title detail-anim-item d1" id="detailBrand"></h2>
+        <div class="detail-variant-name detail-anim-item d1" id="detailVariant"></div>
+        <div class="detail-price detail-anim-item d2" id="detailPrice"></div>
+
+        <div class="product-swatches detail-anim-item d3" id="productSwatches"></div>
+
+        <p class="detail-description detail-anim-item d4" id="detailDesc"></p>
+
+        <div class="action-row detail-anim-item d5">
+          <button class="buy-now-btn" id="buyNowBtn">Buy Now</button>
+          <button class="back-lineup-btn" id="backLineupBtn">All Products</button>
+        </div>
+
+        <p class="shipping-note detail-anim-item d5">
+          Get free aqua-insulated shipping and returns when you order direct from My Seven Ocean.
+        </p>
+      </div>
+
+      <div class="mini-product-dock" id="miniProductDock"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2: SCROLL-DRIVEN 3D KINETIC DECK
+       ============================================================ -->
+  <div class="scroll-track-container" id="sectionDeckTrigger">
+    <div class="deck-sticky-stage">
+      <div class="deck-header-wrap">
+        <div class="deck-eyebrow">🌊 Scroll-Driven Spatial Kinetics</div>
+        <h2 class="deck-title">Touching tomorrow, <span>today</span></h2>
+        <p class="deck-subtitle">
+          Next-generation hyperbaric trench bio-formulations.
+          Scroll down to watch the 3D isometric stack fan out and spread across the oceanic space.
+        </p>
+
+        <div class="scroll-morph-pill">
+          <span id="scrollStateLabel">3D Isometric Stack</span>
+          <div class="scroll-meter-track">
+            <div class="scroll-meter-fill" id="scrollMeterFill"></div>
+          </div>
+          <span id="scrollPctLabel">0% Scroll</span>
+        </div>
+      </div>
+
+      <div class="deck-viewport-box">
+        <div class="kinetic-deck-anchor" id="deckAnchor">
+          <div class="deck-caustic-shadow" id="deckCausticShadow"></div>
+        </div>
+      </div>
+
+      <div class="deck-bottom-cluster">
+        <div class="deck-status-text" id="deckActionHint">
+          ↓ Continue Scrolling to Fan Out the 3D Deck
+        </div>
+
+        <div class="deck-marquee">
+          <div>FOURIER</div>
+          <div>MENTEE ROBOTICS</div>
+          <div>BOSTON DYNAMICS</div>
+          <div>MY SEVEN OCEAN</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 3: "SCROLL IMAGES REVEAL 001" (Skiper32 / Codrops 3D Grid)
+       Featuring 20 luxury marine product cards in 3D parallax!
+       ============================================================ -->
+  <div class="gallery-scroll-container" id="sectionGalleryTrigger">
+    <div class="gallery-sticky-stage">
+      <!-- Center Editorial Headline -->
+      <div class="gallery-center-headline" id="galleryCenterHeadline">
+        <div class="gallery-spec-badge">✦ Scroll Images Reveal 001</div>
+        <h2 class="gallery-title-main">My Seven Ocean<br /><span>Spatial Archive</span></h2>
+        <p class="gallery-subtitle">
+          A dynamic 3D field of 20 luxury marine formulations. Each product translates,
+          rotates, and illuminates with parallax depth as you scroll through the abyss.
+        </p>
+        <div class="gallery-scroll-pill">
+          <span>Parallax Orbit</span>
+          <div class="gallery-progress-bar">
+            <div class="gallery-progress-fill" id="galleryProgressFill"></div>
+          </div>
+          <span id="galleryPctLabel">0% Reveal</span>
+        </div>
+      </div>
+
+      <!-- 3D Spatial Canvas for 20 Cards -->
+      <div class="gallery-3d-space" id="gallery3dSpace">
+        <!-- 20 3D Cards populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TESTIMONIALS (animated with GSAP)
+       ============================================================ -->
+  <section class="testimonial-section" id="sectionTestimonials">
+    <div class="testimonial-ripples" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="testimonial-inner">
+      <div class="testimonial-head" data-gsap="head">
+        <span class="faq-eyebrow">✦ Testimonials</span>
+        <h2 class="faq-title">Trusted by partners of <span>My Seven Ocean</span></h2>
+        <p class="faq-lead" style="margin-left:auto; margin-right:auto; margin-bottom:0;">
+          Retailers, spas and boutiques share why they distribute with us.
+        </p>
+      </div>
+      <div class="testimonial-grid">
+        <article class="testimonial-card">
+          <div>
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="testimonial-quote">My Seven Ocean restocks us on time, every time. The sealed packaging and authentic batches have made our shelf the first stop for marine skincare.</p>
+          </div>
+          <div class="testimonial-person">
+            <div class="testimonial-avatar">AK</div>
+            <div>
+              <div class="testimonial-name">Ayesha Khan</div>
+              <div class="testimonial-role">Owner, Pearl Beauty Boutique</div>
+            </div>
+          </div>
+        </article>
+        <article class="testimonial-card">
+          <div>
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="testimonial-quote">We moved our spa retail range to My Seven Ocean. Clear pricing, fast dispatch and a team that actually answers messages the same day.</p>
+          </div>
+          <div class="testimonial-person">
+            <div class="testimonial-avatar">RM</div>
+            <div>
+              <div class="testimonial-name">Rohan Mehta</div>
+              <div class="testimonial-role">Procurement Lead, Aqua Wellness Spa</div>
+            </div>
+          </div>
+        </article>
+        <article class="testimonial-card">
+          <div>
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="testimonial-quote">Their distribution terms were simple and fair. Our customers keep coming back for the serums, and reorders are painless.</p>
+          </div>
+          <div class="testimonial-person">
+            <div class="testimonial-avatar">SF</div>
+            <div>
+              <div class="testimonial-name">Sara Fernandes</div>
+              <div class="testimonial-role">Founder, Coastline Cosmetics</div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="testimonial-stats">
+        <div class="testimonial-stat"><strong data-count="120" data-suffix="+">0</strong><span>Retail partners</span></div>
+        <div class="testimonial-stat"><strong data-count="98" data-suffix="%">0</strong><span>On-time deliveries</span></div>
+        <div class="testimonial-stat"><strong data-count="20" data-suffix="">0</strong><span>Marine formulations</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FAQ SECTION
+       ============================================================ -->
+  <section class="faq-section" id="sectionFaq">
+    <div class="faq-inner">
+      <span class="faq-eyebrow">✦ FAQs</span>
+      <h2 class="faq-title">Questions about <span>My Seven Ocean</span></h2>
+      <p class="faq-lead">
+        My Seven Ocean is a marine skincare and fragrance distribution brand. Here are
+        the answers to what retailers and customers ask us most.
+      </p>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>What is My Seven Ocean?</summary>
+          <p>My Seven Ocean is a distribution brand bringing luxury marine formulations (serums, creams, mists and fragrances) from trusted makers to retailers and customers.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Are you a distributor or do you sell directly?</summary>
+          <p>We are a distribution brand. We supply retail partners and also take direct orders through the Ocean Bag on this site.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How can I become a distribution partner?</summary>
+          <p>Write to us with your business name, location and the range you are interested in. Our team will reply with terms, minimum orders and the onboarding steps.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Which regions do you deliver to?</summary>
+          <p>We ship to partners and customers in multiple regions. Delivery time and charges are confirmed when your order is reserved.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Are the products authentic and safe for skin?</summary>
+          <p>Every product is sourced from verified suppliers and shipped sealed. We recommend a patch test before first use, especially on sensitive skin.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What is your return and refund policy?</summary>
+          <p>Unopened products can be returned within 7 days of delivery. Damaged or incorrect items are replaced or refunded after a quick review.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" id="siteFooter">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <a href="#sectionShowcase" class="brand-logo" title="Back to Top">
+            <svg viewBox="0 0 24 24">
+              <path d="M2 13.5c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" />
+              <path d="M2 18c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" opacity="0.65" />
+              <path d="M12 3c2.2 3 3.5 5.2 3.5 7a3.5 3.5 0 1 1-7 0c0-1.8 1.3-4 3.5-7z" />
+            </svg>
+          </a>
+          My Seven Ocean
+        </div>
+        <p class="footer-about">
+          A marine luxury distribution brand. Pure ocean formulations, delivered to
+          retailers and customers with care.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#sectionShowcase">Products</a>
+        <a href="#sectionDeckTrigger">Collection</a>
+        <a href="#sectionGalleryTrigger">Archive</a>
+        <a href="#sectionTestimonials">Reviews</a>
+        <a href="#sectionFaq">FAQs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <span>Distribution Partners</span>
+        <span>Shipping &amp; Returns</span>
+        <span>Privacy Policy</span>
+        <span>Terms of Service</span>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <span>hello@mysevenocean.com</span>
+        <span>Mon – Sat, 10am – 7pm</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 My Seven Ocean. All rights reserved.</span>
+      <span>Pure Marine Luxury</span>
+    </div>
+  </footer>
+
+  <!-- Slide-out Ocean Ritual Bag Drawer -->
+  <div class="drawer-scrim" id="drawerScrim"></div>
+  <aside class="ocean-drawer-panel" id="cartDrawer">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(14,165,233,0.18); padding-bottom:16px;">
+      <h3 style="font-size:18px; font-weight:800;">Your Ocean Bag</h3>
+      <button id="closeDrawerBtn" style="border:none; background:none; font-size:22px; cursor:pointer;">&times;</button>
+    </div>
+    <div id="cartItemsList" style="flex:1; overflow-y:auto; padding:16px 0; display:flex; flex-direction:column; gap:12px;"></div>
+    <div style="border-top:1px solid rgba(14,165,233,0.18); padding-top:16px;">
+      <div style="display:flex; justify-content:space-between; font-weight:800; font-size:16px; margin-bottom:14px;">
+        <span>Total</span>
+        <span id="cartTotalPrice">$0.00</span>
+      </div>
+      <button id="checkoutBtn" style="width:100%; padding:14px; border-radius:999px; border:none; background:linear-gradient(135deg,#071c2b,#0284c7); color:#fff; font-weight:800; cursor:pointer;">
+        Reserve Oceanic Order &rarr;
+      </button>
+    </div>
+  </aside>
+
+  <script>
+    // =========================================================================
+    // 1. DATA: SECTION 1, 2, AND 20-PRODUCT MATRIX FOR SECTION 3
+    // =========================================================================
+    const SECTION1_PRODUCTS = [
+      {
+        id: 'nutravex',
+        brand: 'Nutravex Marine Reserve',
+        variant: 'Blueberry Marine Collagen',
+        shortName: 'Blueberry Collagen',
+        price: '$64.99',
+        priceNum: 64.99,
+        image: 'images/image.webp',
+        swatch: '#1e40af',
+        color: '#1d4ed8',
+        auraLeft: 'rgba(30, 64, 175, 0.16)',
+        auraRight: 'rgba(56, 189, 248, 0.12)',
+        description: 'Wild-caught hydrolyzed deep-sea collagen peptides infused with Nordic antioxidant blueberry extract.'
+      },
+      {
+        id: 'lumera',
+        brand: 'Lumera Glacial Pure',
+        variant: 'Deep Sea Cleanser',
+        shortName: 'Deep Sea Cleanser',
+        price: '$42.00',
+        priceNum: 42.00,
+        image: 'images/image copy.webp',
+        swatch: '#38bdf8',
+        color: '#0284c7',
+        auraLeft: 'rgba(56, 189, 248, 0.18)',
+        auraRight: 'rgba(186, 230, 253, 0.24)',
+        description: 'Silky micro-foaming marine mineral cleanser that sweeps away impurities without stripping moisture.'
+      },
+      {
+        id: 'neriva',
+        brand: 'Neriva Botanical Lab',
+        variant: 'Marine Repair Serum',
+        shortName: 'Marine Repair Serum',
+        price: '$78.50',
+        priceNum: 78.50,
+        image: 'images/image copy 2.webp',
+        swatch: '#10b981',
+        color: '#059669',
+        auraLeft: 'rgba(16, 185, 129, 0.16)',
+        auraRight: 'rgba(45, 212, 191, 0.13)',
+        description: 'Cold-pressed emerald sea kelp bio-ferment suspended in cellular hydration droplets.'
+      },
+      {
+        id: 'aquora',
+        brand: 'Aquora Haute Parfumerie',
+        variant: 'Ocean Mist Eau de Parfum',
+        shortName: 'Ocean Mist Parfum',
+        price: '$115.00',
+        priceNum: 115.00,
+        image: 'images/image copy 3.webp',
+        swatch: '#0284c7',
+        color: '#0369a1',
+        auraLeft: 'rgba(2, 132, 199, 0.19)',
+        auraRight: 'rgba(14, 165, 233, 0.15)',
+        description: 'Crisp Atlantic sea spray, sunlit bergamot, and translucent driftwood amber in a droplet flacon.'
+      },
+      {
+        id: 'velise',
+        brand: 'Velisé Rose-Marine',
+        variant: 'Hydra Bloom Cream',
+        shortName: 'Hydra Bloom Cream',
+        price: '$86.00',
+        priceNum: 86.00,
+        image: 'images/image copy 4.webp',
+        swatch: '#f472b6',
+        color: '#db2777',
+        auraLeft: 'rgba(244, 114, 182, 0.16)',
+        auraRight: 'rgba(56, 189, 248, 0.12)',
+        description: 'Whipped thermal rosewater and deep-ocean squalane melt effortlessly on contact.'
+      }
+    ];
+
+    const SECTION2_PRODUCTS = [
+      {
+        id: 'trench-bio-matrix',
+        brand: 'Hadopelagic Lab',
+        variant: 'Trench Bio-Matrix Vials',
+        tag: 'Hyperbaric Peptide',
+        price: '$145.00',
+        priceNum: 145.00,
+        image: 'images/image copy 2.webp',
+        color: '#059669',
+        glow: 'rgba(5, 150, 105, 0.35)',
+        formula: 'Extremophile Barozymes • 11,000m Depth'
+      },
+      {
+        id: 'glacial-cryo-ampoule',
+        brand: 'Sub-Arctic Bio-Pharma',
+        variant: 'Glacial Cryo-Active Ampoule',
+        tag: 'Cryo-Fermentation',
+        price: '$130.00',
+        priceNum: 130.00,
+        image: 'images/image copy.webp',
+        color: '#0284c7',
+        glow: 'rgba(2, 132, 199, 0.35)',
+        formula: 'Arctic Ice Algae • Cellular Longevity'
+      },
+      {
+        id: 'abyssal-mineral-flux',
+        brand: 'Oceanic Research V',
+        variant: 'Abyssal Thermal Flux Serum',
+        tag: 'Mineral Synthesis',
+        price: '$180.00',
+        priceNum: 180.00,
+        image: 'images/image.webp',
+        color: '#1d4ed8',
+        glow: 'rgba(29, 78, 216, 0.35)',
+        formula: 'Hydrothermal Vent Ions • 350°C Bio-Resist'
+      },
+      {
+        id: 'coral-matrix-shield',
+        brand: 'Marine Bio-Defense',
+        variant: 'Living Coral Membrane Shield',
+        tag: 'Biomimetic Lipid',
+        price: '$125.00',
+        priceNum: 125.00,
+        image: 'images/image copy 4.webp',
+        color: '#db2777',
+        glow: 'rgba(219, 39, 119, 0.35)',
+        formula: 'Reef Polyp Ceramide • 96h Protection'
+      },
+      {
+        id: 'bioluminescent-elixir',
+        brand: 'Photonic Marine Reserve',
+        variant: 'Luciferin Photonic Elixir',
+        tag: 'Photonic Light',
+        price: '$210.00',
+        priceNum: 210.00,
+        image: 'images/image copy 3.webp',
+        color: '#06b6d4',
+        glow: 'rgba(6, 182, 212, 0.35)',
+        formula: 'Noctiluca Biomass • Cellular Luminescence'
+      }
+    ];
+
+    // SECTION 3: 20 Luxury Marine Products Grid (Newly generated packaging + marine line)
+    const SECTION3_PRODUCTS = [
+      { name: 'Crystal Droplet Perfume', tag: 'Extrait', price: '$135.00', num: 135, img: 'images/luxury_oceanic_perfume_1793454482906.webp', color: '#0284c7' },
+      { name: 'Marine Night Serum Dropper', tag: 'Night Repair', price: '$94.00', num: 94, img: 'images/marine_night_serum_1793454501491.webp', color: '#1e40af' },
+      { name: 'Rose-Gold Moisture Jar', tag: 'Hydra Cream', price: '$88.00', num: 88, img: 'images/moisturizing_cream_jar_1793454520456.webp', color: '#db2777' },
+      { name: 'Emerald Algae Ampoule', tag: 'Micro-Kelp', price: '$110.00', num: 110, img: 'images/emerald_algae_ampoule_1793454545965.webp', color: '#059669' },
+      { name: 'Turquoise Peptide Mist', tag: 'Thermal Mist', price: '$58.00', num: 58, img: 'images/turquoise_peptide_mist_1793454573801.webp', color: '#06b6d4' },
+      { name: 'Blueberry Marine Collagen', tag: 'Bio-Peptide', price: '$64.99', num: 64.99, img: 'images/image.webp', color: '#1d4ed8' },
+      { name: 'Deep Sea Cleanser Milk', tag: 'Purifier', price: '$42.00', num: 42, img: 'images/image copy.webp', color: '#0284c7' },
+      { name: 'Marine Repair Elixir', tag: 'Barrier Shield', price: '$78.50', num: 78.5, img: 'images/image copy 2.webp', color: '#059669' },
+      { name: 'Ocean Mist Flacon', tag: 'Atmosphere', price: '$115.00', num: 115, img: 'images/image copy 3.webp', color: '#0369a1' },
+      { name: 'Velisé Hydra Bloom Cream', tag: 'Cloud Velvet', price: '$86.00', num: 86, img: 'images/image copy 4.webp', color: '#db2777' },
+      { name: 'Glacial Mineral Drops', tag: '72 Trace Ions', price: '$72.00', num: 72, img: 'images/marine_night_serum_1793454501491.webp', color: '#0284c7' },
+      { name: 'Reef Botanical Infusion', tag: 'Active Coral', price: '$120.00', num: 120, img: 'images/moisturizing_cream_jar_1793454520456.webp', color: '#db2777' },
+      { name: 'Sea Squalane Barrier', tag: 'Cell Lipids', price: '$98.00', num: 98, img: 'images/emerald_algae_ampoule_1793454545965.webp', color: '#059669' },
+      { name: 'Nordic Oceanic Essence', tag: 'Isotonic Lab', price: '$68.00', num: 68, img: 'images/turquoise_peptide_mist_1793454573801.webp', color: '#06b6d4' },
+      { name: 'Sub-Arctic Pure Gel', tag: 'Cold Extract', price: '$54.00', num: 54, img: 'images/image copy.webp', color: '#0284c7' },
+      { name: 'Deep Trench Barozyme', tag: 'Hyperbaric', price: '$165.00', num: 165, img: 'images/luxury_oceanic_perfume_1793454482906.webp', color: '#0369a1' },
+      { name: 'Atlantic Marine Concentrate', tag: 'Algae Stem', price: '$140.00', num: 140, img: 'images/image copy 2.webp', color: '#059669' },
+      { name: 'Pearl Luminescence Serum', tag: 'Glass Skin', price: '$89.00', num: 89, img: 'images/marine_night_serum_1793454501491.webp', color: '#1d4ed8' },
+      { name: 'Hydro-Velvet Rose Balm', tag: 'Petal Dew', price: '$76.00', num: 76, img: 'images/image copy 4.webp', color: '#db2777' },
+      { name: 'My Seven Ocean Prime Flacon', tag: 'Master Reserve', price: '$220.00', num: 220, img: 'images/luxury_oceanic_perfume_1793454482906.webp', color: '#06b6d4' }
+    ];
+
+    // =========================================================================
+    // 2. SYNTHESIZED WEB AUDIO (Aquatic Water Drops & Ocean Swells)
+    // =========================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playWaterDrop(freq = 520) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 2.15, now + 0.1);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.08, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } catch (e) {}
+    }
+
+    function playWaveGlide() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(340, now + 0.25);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.55);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.05, now + 0.2);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.56);
+      } catch (e) {}
+    }
+
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    const soundLabel = document.getElementById('soundLabel');
+    soundToggleBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+      soundLabel.textContent = soundEnabled ? 'Aqua Sound' : 'Muted';
+      if (soundEnabled) playWaterDrop(600);
+    });
+
+    // =========================================================================
+    // 3. SECTION 1: HORIZONTAL SHOWCASE WITH SPOTLIGHT
+    // =========================================================================
+    const sectionShowcase = document.getElementById('sectionShowcase');
+    const ambientDynamicAura = document.getElementById('ambientDynamicAura');
+    const carouselViewport = document.getElementById('carouselViewport');
+    const carouselTrack = document.getElementById('carouselTrack');
+    const heroProductStage = document.getElementById('heroProductStage');
+    const peekPrevProduct = document.getElementById('peekPrevProduct');
+    const peekPrevImg = document.getElementById('peekPrevImg');
+    const detailPanel = document.getElementById('detailPanel');
+    const detailBrand = document.getElementById('detailBrand');
+    const detailVariant = document.getElementById('detailVariant');
+    const detailPrice = document.getElementById('detailPrice');
+    const detailDesc = document.getElementById('detailDesc');
+    const productSwatches = document.getElementById('productSwatches');
+    const miniProductDock = document.getElementById('miniProductDock');
+    const backLineupBtn = document.getElementById('backLineupBtn');
+    const buyNowBtn = document.getElementById('buyNowBtn');
+
+    let activeIndex = null;
+    let isAnimating = false;
+    let currentActorEl = null;
+
+    function initShowcaseUI() {
+      carouselTrack.innerHTML = '';
+      productSwatches.innerHTML = '';
+      miniProductDock.innerHTML = '';
+
+      SECTION1_PRODUCTS.forEach((product, index) => {
+        const slot = document.createElement('div');
+        slot.className = 'product-slot';
+        slot.dataset.index = index;
+        slot.innerHTML = `
+          <div class="slot-img-wrap">
+            <img class="slot-img" src="${product.image}" alt="${product.variant}" draggable="false" />
+          </div>
+          <div class="slot-caption">
+            <span>${product.shortName} &bull; ${product.price}</span>
+          </div>
+        `;
+        slot.addEventListener('click', () => {
+          if (hasDragged) return;
+          selectProductFromCarousel(index, slot);
+        });
+        carouselTrack.appendChild(slot);
+
+        const swatch = document.createElement('button');
+        swatch.className = 'swatch-btn';
+        swatch.style.setProperty('--swatch-color', product.swatch);
+        swatch.innerHTML = `<span class="swatch-tip">${product.shortName}</span>`;
+        swatch.addEventListener('click', () => switchActiveProduct(index));
+        productSwatches.appendChild(swatch);
+
+        const dockBtn = document.createElement('button');
+        dockBtn.className = 'dock-item';
+        dockBtn.innerHTML = `<img src="${product.image}" alt="${product.shortName}" />`;
+        dockBtn.addEventListener('click', () => switchActiveProduct(index));
+        miniProductDock.appendChild(dockBtn);
+      });
+    }
+
+    initShowcaseUI();
+
+    let isMouseDown = false;
+    let startX = 0;
+    let scrollLeftStart = 0;
+    let hasDragged = false;
+
+    carouselViewport.addEventListener('wheel', (e) => {
+      if (activeIndex !== null) return;
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        carouselViewport.scrollLeft += e.deltaY * 1.35;
+      }
+    }, { passive: false });
+
+    carouselViewport.addEventListener('mousedown', (e) => {
+      if (activeIndex !== null) return;
+      isMouseDown = true;
+      hasDragged = false;
+      carouselViewport.classList.add('dragging');
+      startX = e.pageX - carouselViewport.offsetLeft;
+      scrollLeftStart = carouselViewport.scrollLeft;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      const x = e.pageX - carouselViewport.offsetLeft;
+      const walk = (x - startX) * 1.4;
+      if (Math.abs(walk) > 8) hasDragged = true;
+      carouselViewport.scrollLeft = scrollLeftStart - walk;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isMouseDown) return;
+      isMouseDown = false;
+      carouselViewport.classList.remove('dragging');
+      setTimeout(() => { hasDragged = false; }, 50);
+    });
+
+    function updateDetailContent(index) {
+      const product = SECTION1_PRODUCTS[index];
+      detailBrand.textContent = product.brand;
+      detailVariant.textContent = product.variant;
+      detailVariant.style.color = product.color;
+      detailPrice.textContent = product.price;
+      detailDesc.textContent = product.description;
+
+      ambientDynamicAura.style.setProperty('--aura-left', product.auraLeft);
+      ambientDynamicAura.style.setProperty('--aura-right', product.auraRight);
+
+      Array.from(productSwatches.children).forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+      Array.from(miniProductDock.children).forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+
+      const prevIdx = (index - 1 + SECTION1_PRODUCTS.length) % SECTION1_PRODUCTS.length;
+      peekPrevImg.src = SECTION1_PRODUCTS[prevIdx].image;
+      peekPrevProduct.onclick = () => switchActiveProduct(prevIdx);
+    }
+
+    function selectProductFromCarousel(index, clickedSlotEl) {
+      if (isAnimating || activeIndex !== null) return;
+      isAnimating = true;
+      activeIndex = index;
+
+      playWaveGlide();
+
+      const product = SECTION1_PRODUCTS[index];
+      const slotImg = clickedSlotEl.querySelector('.slot-img');
+      const startRect = slotImg.getBoundingClientRect();
+      const targetRect = heroProductStage.getBoundingClientRect();
+
+      const deltaX = (startRect.left + startRect.width / 2) - (targetRect.left + targetRect.width / 2);
+      const deltaY = (startRect.top + startRect.height / 2) - (targetRect.top + targetRect.height / 2);
+      const startScale = startRect.width / targetRect.width;
+
+      const actor = document.createElement('div');
+      actor.className = 'stage-actor';
+      actor.innerHTML = `<img src="${product.image}" alt="${product.variant}" />`;
+      heroProductStage.innerHTML = '';
+      heroProductStage.appendChild(actor);
+      currentActorEl = actor;
+
+      updateDetailContent(index);
+      sectionShowcase.classList.add('detail-active');
+
+      const anim = actor.animate(
+        [
+          { transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${startScale}) rotate(-4deg)`, opacity: 1 },
+          { transform: `translate3d(${deltaX * 0.25}px, ${deltaY * 0.15 - 18}px, 0) scale(${Math.min(1.06, startScale + 0.35)}) rotate(2deg)`, opacity: 1, offset: 0.65 },
+          { transform: 'translate3d(0px, 0px, 0) scale(1) rotate(0deg)', opacity: 1 }
+        ],
+        { duration: 850, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+      );
+
+      anim.onfinish = () => {
+        actor.classList.add('settled');
+        isAnimating = false;
+      };
+    }
+
+    function switchActiveProduct(nextIndex) {
+      if (isAnimating || nextIndex === activeIndex || activeIndex === null) return;
+      isAnimating = true;
+
+      playWaveGlide();
+      const prevIndex = activeIndex;
+      const direction = nextIndex > prevIndex ? 1 : -1;
+      activeIndex = nextIndex;
+      const nextProduct = SECTION1_PRODUCTS[nextIndex];
+
+      detailPanel.classList.add('switching');
+
+      const outgoingActor = currentActorEl;
+      if (outgoingActor) {
+        outgoingActor.classList.remove('settled');
+        const outAnim = outgoingActor.animate(
+          [
+            { transform: 'translate3d(0px, 0px, 0) scale(1)', filter: 'blur(0px)', opacity: 1 },
+            { transform: `translate3d(${-direction * 140}px, -45px, 0) scale(0.62)`, filter: 'blur(4px)', opacity: 0.55, offset: 0.55 },
+            { transform: `translate3d(${-direction * 260}px, 50px, 0) scale(0.42)`, filter: 'blur(10px)', opacity: 0 }
+          ],
+          { duration: 680, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' }
+        );
+        outAnim.onfinish = () => {
+          if (outgoingActor.parentNode) outgoingActor.parentNode.removeChild(outgoingActor);
+        };
+      }
+
+      const incomingActor = document.createElement('div');
+      incomingActor.className = 'stage-actor';
+      incomingActor.style.opacity = '0';
+      incomingActor.innerHTML = `<img src="${nextProduct.image}" alt="${nextProduct.variant}" />`;
+      heroProductStage.appendChild(incomingActor);
+      currentActorEl = incomingActor;
+
+      setTimeout(() => {
+        updateDetailContent(nextIndex);
+        detailPanel.classList.remove('switching');
+      }, 220);
+
+      const inAnim = incomingActor.animate(
+        [
+          { transform: `translate3d(${direction * 280}px, 75px, 0) scale(0.45)`, filter: 'blur(9px)', opacity: 0 },
+          { transform: `translate3d(${direction * 90}px, -16px, 0) scale(0.82)`, filter: 'blur(2px)', opacity: 0.88, offset: 0.45 },
+          { transform: 'translate3d(0px, 0px, 0) scale(1)', filter: 'blur(0px)', opacity: 1 }
+        ],
+        { duration: 780, delay: 190, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+      );
+
+      inAnim.onfinish = () => {
+        incomingActor.style.opacity = '1';
+        incomingActor.classList.add('settled');
+        isAnimating = false;
+      };
+    }
+
+    function returnToCarousel() {
+      if (isAnimating || activeIndex === null) return;
+      isAnimating = true;
+
+      playWaveGlide();
+      const returningIndex = activeIndex;
+      const targetSlot = carouselTrack.children[returningIndex];
+
+      if (targetSlot) {
+        const slotLeft = targetSlot.offsetLeft;
+        const slotWidth = targetSlot.offsetWidth;
+        const viewportWidth = carouselViewport.clientWidth;
+        carouselViewport.scrollLeft = slotLeft - viewportWidth / 2 + slotWidth / 2;
+      }
+
+      const slotImg = targetSlot.querySelector('.slot-img');
+      const endRect = slotImg.getBoundingClientRect();
+      const stageRect = heroProductStage.getBoundingClientRect();
+
+      const deltaX = (endRect.left + endRect.width / 2) - (stageRect.left + stageRect.width / 2);
+      const deltaY = (endRect.top + endRect.height / 2) - (stageRect.top + stageRect.height / 2);
+      const endScale = endRect.width / stageRect.width;
+
+      sectionShowcase.classList.remove('detail-active');
+
+      if (currentActorEl) {
+        currentActorEl.classList.remove('settled');
+        const backAnim = currentActorEl.animate(
+          [
+            { transform: 'translate3d(0px, 0px, 0) scale(1)', opacity: 1 },
+            { transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${endScale})`, opacity: 1, offset: 0.85 },
+            { transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${endScale})`, opacity: 0 }
+          ],
+          { duration: 680, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        );
+
+        backAnim.onfinish = () => {
+          heroProductStage.innerHTML = '';
+          currentActorEl = null;
+          activeIndex = null;
+          isAnimating = false;
+        };
+      } else {
+        activeIndex = null;
+        isAnimating = false;
+      }
+    }
+
+    backLineupBtn.addEventListener('click', returnToCarousel);
+
+    // =========================================================================
+    // 4. SECTION 2: SCROLL-DRIVEN 3D KINETIC DECK
+    // =========================================================================
+    const sectionDeckTrigger = document.getElementById('sectionDeckTrigger');
+    const deckAnchor = document.getElementById('deckAnchor');
+    const deckCausticShadow = document.getElementById('deckCausticShadow');
+    const scrollMeterFill = document.getElementById('scrollMeterFill');
+    const scrollStateLabel = document.getElementById('scrollStateLabel');
+    const scrollPctLabel = document.getElementById('scrollPctLabel');
+    const deckActionHint = document.getElementById('deckActionHint');
+
+    const kineticCardEls = [];
+    let hoverDeckCard = -1;
+
+    function initSection2Deck() {
+      deckAnchor.innerHTML = '';
+      deckAnchor.appendChild(deckCausticShadow);
+      kineticCardEls.length = 0;
+
+      SECTION2_PRODUCTS.forEach((product, i) => {
+        const card = document.createElement('div');
+        card.className = 'kinetic-card';
+        card.dataset.index = i;
+        card.style.setProperty('--card-color', product.color);
+        card.style.setProperty('--card-glow', product.glow);
+
+        card.innerHTML = `
+          <div class="card-glass-body">
+            <div class="card-glow-blob"></div>
+            <div class="card-header-bar">
+              <span class="card-tag">${product.tag}</span>
+              <span class="card-num">T-0${i + 1}</span>
+            </div>
+            <div class="card-img-zone">
+              <img class="card-img" src="${product.image}" alt="${product.variant}" draggable="false" />
+            </div>
+            <div class="card-footer-info">
+              <div class="card-title">${product.variant}</div>
+              <div class="card-formula">
+                <span>${product.formula}</span>
+                <span class="card-price-tag">${product.price}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('mouseenter', () => {
+          hoverDeckCard = i;
+          playWaterDrop(450 + i * 60);
+          applyScrollKineticMorph(true);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          hoverDeckCard = -1;
+          applyScrollKineticMorph(true);
+        });
+
+        card.addEventListener('click', () => {
+          addToRitualBag(product, card);
+        });
+
+        deckAnchor.appendChild(card);
+        kineticCardEls.push(card);
+      });
+    }
+
+    initSection2Deck();
+
+    let lastProgressSound = 0;
+
+    let lastDeckProgress = -1;
+    let lastDeckPct = -1;
+    let lastDeckState = '';
+    function applyScrollKineticMorph(force) {
+      const rect = sectionDeckTrigger.getBoundingClientRect();
+      const totalScrollable = rect.height - window.innerHeight;
+      const scrolled = -rect.top;
+      let progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      if (!force && progress === lastDeckProgress) return;
+      lastDeckProgress = progress;
+
+      const pctDisplay = Math.round(progress * 100);
+      if (pctDisplay !== lastDeckPct) {
+        lastDeckPct = pctDisplay;
+        scrollMeterFill.style.width = `${pctDisplay}%`;
+        scrollPctLabel.textContent = `${pctDisplay}% Kinetic`;
+      }
+
+      const deckState = progress < 0.18 ? 'a' : progress < 0.82 ? 'b' : 'c';
+      if (deckState !== lastDeckState) {
+        lastDeckState = deckState;
+        if (deckState === 'a') {
+          scrollStateLabel.textContent = '3D Isometric Stack';
+          deckActionHint.textContent = '↓ Scroll Down to Fan Out 3D Deck';
+        } else if (deckState === 'b') {
+          scrollStateLabel.textContent = 'Fanning 3D Spatial Array';
+          deckActionHint.textContent = '⤹ Scrolling Expands 3D Marine Slices';
+        } else {
+          scrollStateLabel.textContent = 'Full 3D Kinetic Spread';
+          deckActionHint.textContent = '✨ Click Any 3D Formulation to Add to Bag';
+        }
+      }
+
+      const currentTick = Math.floor(progress * 10);
+      if (currentTick !== lastProgressSound) {
+        lastProgressSound = currentTick;
+        playWaterDrop(400 + currentTick * 35);
+      }
+
+      const anchorRotX = 46 - progress * 36;
+      const anchorRotZ = -30 + progress * 30;
+      const anchorRotY = 14 - progress * 14;
+      const anchorTransY = 16 - progress * 8;
+
+      deckAnchor.style.transform = `translate3d(0, ${anchorTransY}px, 0) rotateX(${anchorRotX}deg) rotateZ(${anchorRotZ}deg) rotateY(${anchorRotY}deg)`;
+      deckCausticShadow.style.opacity = `${1 - progress * 0.35}`;
+      deckCausticShadow.style.transform = `translate(-50%, -50%) rotateX(${75 - progress * 40}deg) scale(${1 + progress * 0.5})`;
+
+      const centerIdx = 2;
+
+      kineticCardEls.forEach((card, idx) => {
+        const stackLayer = idx;
+        const stackZ = stackLayer * 48;
+        const stackY = -stackLayer * 18;
+        const stackX = 0;
+        const stackRotY = 0;
+        const stackRotZ = 0;
+
+        const offset = idx - centerIdx;
+        const absOffset = Math.abs(offset);
+        const fanX = offset * 215;
+        const fanZ = -absOffset * 110;
+        const fanY = absOffset * 16;
+        const fanRotY = -offset * 15;
+        const fanRotZ = offset * 3;
+
+        const curX = stackX + (fanX - stackX) * progress;
+        const curY = stackY + (fanY - stackY) * progress;
+        const curZ = stackZ + (fanZ - stackZ) * progress;
+        const curRotY = stackRotY + (fanRotY - stackRotY) * progress;
+        const curRotZ = stackRotZ + (fanRotZ - stackRotZ) * progress;
+
+        let hoverBonusZ = 0;
+        let hoverBonusY = 0;
+        if (hoverDeckCard === idx) {
+          hoverBonusZ = 50;
+          hoverBonusY = -18;
+        }
+
+        card.style.transform = `translate3d(${curX}px, ${curY + hoverBonusY}px, ${curZ + hoverBonusZ}px) rotateY(${curRotY}deg) rotateZ(${curRotZ}deg)`;
+
+        const stackZIndex = stackLayer + 10;
+        const fanZIndex = 30 - absOffset * 2;
+        card.style.zIndex = Math.round(stackZIndex + (fanZIndex - stackZIndex) * progress);
+        card.style.opacity = '1';
+      });
+    }
+
+    // =========================================================================
+    // 5. SECTION 3: "SCROLL IMAGES REVEAL 001" (Skiper32 / Codrops 3D Grid)
+    //    20 Marine Product Cards that rotate, translate and fade in 3D parallax!
+    // =========================================================================
+    const sectionGalleryTrigger = document.getElementById('sectionGalleryTrigger');
+    const gallery3dSpace = document.getElementById('gallery3dSpace');
+    const galleryProgressFill = document.getElementById('galleryProgressFill');
+    const galleryPctLabel = document.getElementById('galleryPctLabel');
+    const galleryCenterHeadline = document.getElementById('galleryCenterHeadline');
+
+    // Generate 20 distinct 3D orbital trajectory configs for the 20 cards
+    const revealCardConfigs = [
+      // Ring 1: Close foreground orbits
+      { baseX: -440, baseY: -240, startZ: -900, endZ: 380, rotX: -18, rotY: 24, rotZ: -8, speed: 1.15 },
+      { baseX: 440, baseY: -260, startZ: -800, endZ: 320, rotX: 16, rotY: -22, rotZ: 10, speed: 1.05 },
+      { baseX: -460, baseY: 220, startZ: -700, endZ: 410, rotX: 20, rotY: 26, rotZ: 12, speed: 1.25 },
+      { baseX: 450, baseY: 240, startZ: -950, endZ: 360, rotX: -22, rotY: -25, rotZ: -12, speed: 1.1 },
+
+      // Ring 2: Mid-distance flankers
+      { baseX: -740, baseY: -80, startZ: -1100, endZ: 210, rotX: -12, rotY: 34, rotZ: -6, speed: 0.95 },
+      { baseX: 740, baseY: -60, startZ: -1050, endZ: 240, rotX: 14, rotY: -32, rotZ: 8, speed: 0.98 },
+      { baseX: -700, baseY: 320, startZ: -1200, endZ: 180, rotX: 22, rotY: 30, rotZ: 14, speed: 1.3 },
+      { baseX: 710, baseY: 310, startZ: -1150, endZ: 200, rotX: -20, rotY: -30, rotZ: -15, speed: 1.22 },
+
+      // Ring 3: Upper & lower orbital crests
+      { baseX: -220, baseY: -420, startZ: -1300, endZ: 140, rotX: -30, rotY: 15, rotZ: -18, speed: 1.08 },
+      { baseX: 220, baseY: -430, startZ: -1250, endZ: 160, rotX: -28, rotY: -16, rotZ: 16, speed: 1.14 },
+      { baseX: -240, baseY: 420, startZ: -1400, endZ: 110, rotX: 32, rotY: 18, rotZ: 14, speed: 1.35 },
+      { baseX: 230, baseY: 430, startZ: -1350, endZ: 120, rotX: 29, rotY: -17, rotZ: -16, speed: 1.28 },
+
+      // Ring 4: Outer deep abyss anchors
+      { baseX: -920, baseY: -340, startZ: -1600, endZ: -50, rotX: -15, rotY: 42, rotZ: -10, speed: 0.85 },
+      { baseX: 920, baseY: -320, startZ: -1550, endZ: -20, rotX: 18, rotY: -40, rotZ: 12, speed: 0.88 },
+      { baseX: -900, baseY: 220, startZ: -1700, endZ: -60, rotX: 24, rotY: 38, rotZ: 16, speed: 1.4 },
+      { baseX: 910, baseY: 200, startZ: -1650, endZ: -30, rotX: -22, rotY: -36, rotZ: -14, speed: 1.32 },
+
+      // Ring 5: Deep background constellations
+      { baseX: -550, baseY: -520, startZ: -1900, endZ: -140, rotX: -36, rotY: 28, rotZ: -22, speed: 0.78 },
+      { baseX: 560, baseY: -510, startZ: -1850, endZ: -110, rotX: -34, rotY: -26, rotZ: 20, speed: 0.82 },
+      { baseX: -540, baseY: 520, startZ: -1950, endZ: -150, rotX: 38, rotY: 25, rotZ: 20, speed: 1.45 },
+      { baseX: 550, baseY: 530, startZ: -1920, endZ: -130, rotX: 36, rotY: -24, rotZ: -18, speed: 1.42 }
+    ];
+
+    const revealCardEls = [];
+
+    function initSection3Gallery() {
+      gallery3dSpace.innerHTML = '';
+      revealCardEls.length = 0;
+
+      SECTION3_PRODUCTS.forEach((product, i) => {
+        const cfg = revealCardConfigs[i] || revealCardConfigs[0];
+        const card = document.createElement('div');
+        card.className = 'reveal-card';
+        card.dataset.index = i;
+        card.style.setProperty('--tile-color', product.color);
+        card.style.setProperty('--tile-glow', `${product.color}40`);
+
+        card.innerHTML = `
+          <div class="reveal-card-inner">
+            <div class="reveal-card-glow"></div>
+            <div class="reveal-card-header">
+              <span class="reveal-card-tag">${product.tag}</span>
+              <span class="reveal-card-num">#${(i + 1).toString().padStart(2, '0')}</span>
+            </div>
+            <div class="reveal-card-img-wrap">
+              <img class="reveal-card-img" src="${product.img}" alt="${product.name}" draggable="false" />
+            </div>
+            <div class="reveal-card-footer">
+              <div class="reveal-card-name">${product.name}</div>
+              <div class="reveal-card-price-row">
+                <span>Marine Formulation</span>
+                <span class="reveal-card-price">${product.price}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('mouseenter', () => playWaterDrop(420 + i * 22));
+        card.addEventListener('click', () => {
+          addToRitualBag({
+            id: `gallery-${i}`,
+            variant: product.name,
+            price: product.price,
+            priceNum: product.num,
+            image: product.img
+          }, card);
+        });
+
+        gallery3dSpace.appendChild(card);
+        revealCardEls.push({ el: card, cfg });
+      });
+    }
+
+    initSection3Gallery();
+
+    /**
+     * Skiper32 / Codrops 3D Reveal Engine:
+     * Rotates, translates, and fades 20 images on 3D perspective scroll!
+     */
+    let lastGalleryProgress = -1;
+    let lastGalleryPct = -1;
+    function applyGalleryScrollReveal(force) {
+      const rect = sectionGalleryTrigger.getBoundingClientRect();
+      const totalScrollable = rect.height - window.innerHeight;
+      const scrolled = -rect.top;
+      let progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      if (!force && progress === lastGalleryProgress) return;
+      lastGalleryProgress = progress;
+
+      const pct = Math.round(progress * 100);
+      if (pct !== lastGalleryPct) {
+        lastGalleryPct = pct;
+        galleryProgressFill.style.width = `${pct}%`;
+        galleryPctLabel.textContent = `${pct}% Reveal`;
+      }
+
+      // Fade center headline as cards fly in to keep focus clean
+      if (progress > 0.8) {
+        galleryCenterHeadline.style.opacity = `${Math.max(0.12, 1 - (progress - 0.8) * 4)}`;
+        galleryCenterHeadline.style.transform = `translate(-50%, calc(-50% - ${(progress - 0.8) * 50}px)) scale(${1 - (progress - 0.8) * 0.1})`;
+      } else {
+        galleryCenterHeadline.style.opacity = '1';
+        galleryCenterHeadline.style.transform = 'translate(-50%, -50%) scale(1)';
+      }
+
+      // Animate all 20 cards in 3D perspective
+      revealCardEls.forEach(({ el, cfg }, i) => {
+        // Individual parallax rate
+        const cardProgress = Math.max(0, Math.min(1, progress * cfg.speed));
+
+        // Interpolate 3D translation & rotation
+        const currentZ = cfg.startZ + (cfg.endZ - cfg.startZ) * cardProgress;
+        const currentX = cfg.baseX + Math.sin(cardProgress * Math.PI) * 40;
+        const currentY = cfg.baseY + (1 - cardProgress) * 60;
+
+        const currentRotX = cfg.rotX * (1 - cardProgress * 0.7);
+        const currentRotY = cfg.rotY * (1 - cardProgress * 0.7);
+        const currentRotZ = cfg.rotZ * (1 - cardProgress * 0.5);
+
+        // Dynamic Opacity: fades in as it approaches, softens if it passes past camera
+        let opacity = 0;
+        if (currentZ < -1500) {
+          opacity = 0;
+        } else if (currentZ < -400) {
+          opacity = (currentZ + 1500) / 1100;
+        } else if (currentZ <= 300) {
+          opacity = 1;
+        } else {
+          // flies past viewer
+          opacity = Math.max(0, 1 - (currentZ - 300) / 150);
+        }
+
+        // Depth blur
+        const depthBlur = currentZ < -600 ? Math.round(Math.min(5, (-currentZ - 600) * 0.006)) : 0;
+
+        el.style.transform = `translate3d(${currentX}px, ${currentY}px, ${currentZ}px) rotateX(${currentRotX}deg) rotateY(${currentRotY}deg) rotateZ(${currentRotZ}deg)`;
+        el.style.opacity = `${opacity}`;
+        el.style.filter = depthBlur >= 1 ? `blur(${depthBlur}px)` : 'none';
+        el.style.zIndex = Math.round(currentZ + 2000);
+      });
+    }
+
+    // Unified scroll listener
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        scrollTicking = false;
+        applyScrollKineticMorph();
+        applyGalleryScrollReveal();
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      applyScrollKineticMorph(true);
+      applyGalleryScrollReveal(true);
+    });
+
+    applyScrollKineticMorph();
+    applyGalleryScrollReveal();
+
+    // =========================================================================
+    // 6. OCEAN BAG & FLYING DROPLET
+    // =========================================================================
+    const cart = {};
+    const cartDrawer = document.getElementById('cartDrawer');
+    const drawerScrim = document.getElementById('drawerScrim');
+    const openBagBtn = document.getElementById('openBagBtn');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+    const cartItemsList = document.getElementById('cartItemsList');
+    const cartTotalPrice = document.getElementById('cartTotalPrice');
+    const bagCountBadge = document.getElementById('bagCountBadge');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    function openCart() {
+      cartDrawer.classList.add('open');
+      drawerScrim.classList.add('open');
+    }
+
+    function closeCart() {
+      cartDrawer.classList.remove('open');
+      drawerScrim.classList.remove('open');
+    }
+
+    openBagBtn.addEventListener('click', openCart);
+    closeDrawerBtn.addEventListener('click', closeCart);
+    drawerScrim.addEventListener('click', closeCart);
+
+    function updateCartUI() {
+      const items = Object.values(cart);
+      const totalCount = items.reduce((sum, item) => sum + item.qty, 0);
+      const totalCost = items.reduce((sum, item) => sum + item.qty * item.product.priceNum, 0);
+
+      bagCountBadge.textContent = totalCount;
+      cartTotalPrice.textContent = `$${totalCost.toFixed(2)}`;
+
+      if (items.length === 0) {
+        cartItemsList.innerHTML = `
+          <div style="text-align:center; padding: 40px 10px; color:#64748b; font-size:13px;">
+            Your Ocean Ritual Bag is currently empty.<br/>Click any formula to begin.
+          </div>
+        `;
+        return;
+      }
+
+      cartItemsList.innerHTML = items.map(({ product, qty }) => `
+        <div style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:14px; background:#f0f9ff; border:1px solid rgba(14,165,233,0.18);">
+          <img src="${product.image}" style="width:48px; height:48px; object-fit:contain; mix-blend-mode:multiply;" />
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:700;">${product.variant}</div>
+            <div style="font-size:12px; color:#0284c7; font-weight:700;">${product.price}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button onclick="changeCart('${product.id}', -1)" style="width:22px; height:22px; border-radius:50%; border:1px solid #cbd5e1; background:#fff; cursor:pointer;">-</button>
+            <span style="font-size:12px; font-weight:700;">${qty}</span>
+            <button onclick="changeCart('${product.id}', 1)" style="width:22px; height:22px; border-radius:50%; border:1px solid #cbd5e1; background:#fff; cursor:pointer;">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.changeCart = function(id, delta) {
+      if (!cart[id]) return;
+      cart[id].qty += delta;
+      if (cart[id].qty <= 0) delete cart[id];
+      playWaterDrop(520);
+      updateCartUI();
+    };
+
+    updateCartUI();
+
+    function addToRitualBag(product, sourceEl) {
+      playWaterDrop(680);
+      const startRect = sourceEl.getBoundingClientRect();
+      const endRect = openBagBtn.getBoundingClientRect();
+
+      const drop = document.createElement('div');
+      drop.className = 'flying-drop';
+      drop.style.left = `${startRect.left + startRect.width / 2 - 12}px`;
+      drop.style.top = `${startRect.top + startRect.height / 2 - 12}px`;
+      document.body.appendChild(drop);
+
+      const anim = drop.animate([
+        { transform: 'translate3d(0,0,0) scale(1)', opacity: 1 },
+        { transform: `translate3d(${(endRect.left - startRect.left) * 0.5}px, -110px, 0) scale(1.3)`, opacity: 1, offset: 0.45 },
+        { transform: `translate3d(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px, 0) scale(0.3)`, opacity: 0.3 }
+      ], { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+
+      anim.onfinish = () => {
+        drop.remove();
+        if (!cart[product.id]) cart[product.id] = { product, qty: 0 };
+        cart[product.id].qty += 1;
+        updateCartUI();
+        openCart();
+      };
+    }
+
+    buyNowBtn.addEventListener('click', () => {
+      if (activeIndex === null) return;
+      addToRitualBag(SECTION1_PRODUCTS[activeIndex], buyNowBtn);
+    });
+
+    checkoutBtn.addEventListener('click', () => {
+      if (Object.keys(cart).length === 0) return;
+      playWaterDrop(780);
+      checkoutBtn.textContent = '✨ Ocean Order Confirmed!';
+      setTimeout(() => {
+        Object.keys(cart).forEach(k => delete cart[k]);
+        updateCartUI();
+        checkoutBtn.textContent = 'Reserve Oceanic Order →';
+        closeCart();
+      }, 1300);
+    });
+
+    // =========================================================================
+    // 7. WATER PARTICLES & BUBBLES CANVAS
+    // =========================================================================
+    const canvas = document.getElementById('waterCanvas');
+    const ctx = canvas.getContext('2d');
+    let bubbles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function initBubbles() {
+      bubbles = [];
+      for (let i = 0; i < 26; i++) {
+        bubbles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 4.5 + 1.8,
+          speedY: Math.random() * 0.45 + 0.16,
+          wobbleSpeed: Math.random() * 0.02 + 0.008,
+          wobbleAmp: Math.random() * 0.6 + 0.2,
+          angle: Math.random() * Math.PI * 2,
+          alpha: Math.random() * 0.25 + 0.08
+        });
+      }
+    }
+    initBubbles();
+
+    const sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 64;
+    (function () {
+      const c = sprite.getContext('2d');
+      const g = c.createRadialGradient(24, 24, 3, 32, 32, 30);
+      g.addColorStop(0, 'rgba(255,255,255,0.9)');
+      g.addColorStop(0.6, 'rgba(56,189,248,0.5)');
+      g.addColorStop(1, 'rgba(2,132,199,0)');
+      c.fillStyle = g;
+      c.beginPath(); c.arc(32, 32, 30, 0, Math.PI * 2); c.fill();
+    })();
+
+    function animateWater() {
+      if (document.hidden) { requestAnimationFrame(animateWater); return; }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const b of bubbles) {
+        b.y -= b.speedY;
+        b.angle += b.wobbleSpeed;
+        b.x += Math.sin(b.angle) * b.wobbleAmp;
+        if (b.y < -20) {
+          b.y = canvas.height + 20;
+          b.x = Math.random() * canvas.width;
+        }
+        ctx.globalAlpha = Math.min(1, b.alpha * 2.2);
+        const d = b.r * 2;
+        ctx.drawImage(sprite, b.x - b.r, b.y - b.r, d, d);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animateWater);
+    }
+    animateWater();
+
+    // =========================================================================
+    // 8. TESTIMONIALS + FAQ REVEAL (GSAP / ScrollTrigger)
+    // =========================================================================
+    window.addEventListener('load', () => {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const countEls = document.querySelectorAll('[data-count]');
+      const setCount = (el, v) => { el.textContent = Math.round(v) + (el.dataset.suffix || ''); };
+
+      if (reduce) {
+        countEls.forEach(el => setCount(el, +el.dataset.count));
+        return;
+      }
+
+      // Scroll-scrubbed: animation progress follows the scrollbar both ways
+      gsap.fromTo('[data-gsap="head"]',
+        { y: 90, opacity: 0, scale: 0.94 },
+        { y: 0, opacity: 1, scale: 1, ease: 'none',
+          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top 85%', end: 'top 40%', scrub: 0.8 } });
+
+      const tCards = gsap.utils.toArray('.testimonial-card');
+      const fromX = [-120, 0, 120];
+      const fromY = [140, 200, 140];
+      const fromR = [-6, 0, 6];
+      tCards.forEach((card, i) => {
+        gsap.fromTo(card,
+          { x: fromX[i % 3], y: fromY[i % 3], rotation: fromR[i % 3], opacity: 0, scale: 0.9 },
+          { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, ease: 'power2.out',
+            scrollTrigger: { trigger: '.testimonial-grid', start: 'top 92%', end: 'top 35%', scrub: 1 } });
+        // slow parallax drift while the section scrolls past
+        gsap.to(card, {
+          yPercent: i === 1 ? -9 : 6, ease: 'none',
+          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
+      });
+
+      // ocean ripples expand with scroll
+      gsap.fromTo('.testimonial-ripples i',
+        { scale: 0.7 },
+        { scale: 1.15, ease: 'none', stagger: 0.08,
+          scrollTrigger: { trigger: '#sectionTestimonials', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+
+      // stats count up as you scroll
+      countEls.forEach(el => {
+        const o = { v: 0 };
+        gsap.to(o, {
+          v: +el.dataset.count, ease: 'none',
+          onUpdate: () => setCount(el, o.v),
+          scrollTrigger: { trigger: '.testimonial-stats', start: 'top 95%', end: 'top 55%', scrub: 0.6 } });
+      });
+
+      // navbar: highlight the link of the section in view
+      document.querySelectorAll('.nav-link[data-nav]').forEach(link => {
+        const target = document.getElementById(link.dataset.nav);
+        if (!target) return;
+        ScrollTrigger.create({
+          trigger: target, start: 'top 55%', end: 'bottom 55%',
+          onToggle: self => link.classList.toggle('is-active', self.isActive)
+        });
+      });
+
+      gsap.from('.faq-item', {
+        y: 30, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.09,
+        scrollTrigger: { trigger: '.faq-list', start: 'top 85%', once: true }
+      });
+
+      gsap.from('.footer-col', {
+        y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1,
+        scrollTrigger: { trigger: '#siteFooter', start: 'top 92%', once: true }
+      });
+    });
+  </script>
+</body>
+</html>
