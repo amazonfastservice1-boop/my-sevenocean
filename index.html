@@ -372,8 +372,9 @@
     .product-slot::before {
       content: '';
       position: absolute;
-      inset: -12%;
-      background: radial-gradient(circle, #ffffff 48%, rgba(255,255,255,0) 76%);
+      inset: -26%;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, #ffffff 28%, rgba(255,255,255,0) 96%);
       z-index: 0;
       pointer-events: none;
     }
@@ -519,8 +520,9 @@
     .peek-prev-product::before {
       content: '';
       position: absolute;
-      inset: -15%;
-      background: radial-gradient(circle, #ffffff 45%, rgba(255,255,255,0) 75%);
+      inset: -28%;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, #ffffff 26%, rgba(255,255,255,0) 96%);
       z-index: 0;
     }
 
@@ -562,8 +564,9 @@
     .stage-actor::before {
       content: '';
       position: absolute;
-      inset: -14%;
-      background: radial-gradient(circle, #ffffff 50%, rgba(255,255,255,0) 76%);
+      inset: -28%;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, #ffffff 30%, rgba(255,255,255,0) 96%);
       z-index: 0;
       pointer-events: none;
     }
@@ -3547,7 +3550,10 @@
         }
       });
 
-      // Step 1: Initial state (stair bars fully covering the screen)
+      // Step 1: Reset preloader container & initial state
+      if (preloader) preloader.classList.remove('loaded');
+      gsap.set(centerContent, { scale: 1, opacity: 1, y: 0 });
+      gsap.set(progress, { width: '0%' });
       gsap.set(topBars, { scaleY: 1, transformOrigin: 'top center' });
       gsap.set(bottomBars, { scaleY: 1, transformOrigin: 'bottom center' });
       gsap.set(logo, { scale: 0, rotation: -45, opacity: 0 });
@@ -3779,21 +3785,23 @@
       });
     }
 
+      // Brand Logo Click: Trigger Double Stairs Preloader & refresh view
+      document.querySelectorAll('.brand-logo').forEach(logoBtn => {
+        logoBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (typeof resetToLineup === 'function' && activeIndex !== null) {
+            resetToLineup();
+          }
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          playDoubleStairsPreloader();
+        });
+      });
+    }
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initCinematicScrollSections);
     } else {
       initCinematicScrollSections();
-
-    // Brand Logo Click: Smoothly reload website & preloader
-    const brandLogoEl = document.getElementById('brandLogo');
-    if (brandLogoEl) {
-      brandLogoEl.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        window.location.reload();
-      });
-    }
-
     }
   </script>
 </body>

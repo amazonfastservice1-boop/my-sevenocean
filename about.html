@@ -530,9 +530,147 @@
       .footer-grid { grid-template-columns: 1fr; }
       .partner-box { padding: 30px 24px; }
     }
+
+    /* DOUBLE STAIRS PRELOADER */
+    .stairs-preloader-container {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: all;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background: transparent;
+      transition: visibility 0.5s;
+    }
+    .stairs-preloader-container.loaded {
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .stair-layer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 50.5%;
+      display: flex;
+      z-index: 1;
+    }
+    .stair-layer.top { top: 0; }
+    .stair-layer.bottom { bottom: 0; }
+    .stair-bar {
+      flex: 1;
+      height: 100%;
+      background: linear-gradient(180deg, #072438 0%, #0369a1 100%);
+      transform-origin: top center;
+      will-change: transform;
+    }
+    .stair-layer.bottom .stair-bar {
+      background: linear-gradient(0deg, #072438 0%, #0284c7 100%);
+      transform-origin: bottom center;
+    }
+    .preloader-center-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      pointer-events: none;
+    }
+    .preloader-brand-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 50%, #072438 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 35px rgba(6, 182, 212, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
+    }
+    .preloader-brand-logo svg {
+      width: 36px;
+      height: 36px;
+      stroke: #ffffff;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .preloader-title-wrap {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .preloader-brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      color: #ffffff;
+      text-transform: uppercase;
+      text-shadow: 0 4px 20px rgba(7, 36, 56, 0.7);
+    }
+    .preloader-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      margin-top: 6px;
+    }
+    .preloader-bar-line {
+      width: 140px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .preloader-bar-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #ffffff);
+      border-radius: 999px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- DOUBLE STAIRS PRELOADER -->
+  <aside class="stairs-preloader-container" id="stairsPreloader" aria-label="Loading My Seven Ocean">
+    <div class="stair-layer top" id="topStairs">
+      <div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div>
+    </div>
+    <div class="preloader-center-content" id="preloaderCenter">
+      <div class="preloader-brand-logo" id="preloaderLogo">
+        <svg viewBox="0 0 24 24">
+          <path d="M2 13.5c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" />
+          <path d="M2 18c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1" opacity="0.65" />
+          <path d="M12 3c2.2 3 3.5 5.2 3.5 7a3.5 3.5 0 1 1-7 0c0-1.8 1.3-4 3.5-7z" />
+        </svg>
+      </div>
+      <div class="preloader-title-wrap">
+        <div class="preloader-brand-name" id="preloaderName">My Seven Ocean</div>
+        <div class="preloader-subtitle" id="preloaderSub">Marine Luxury &bull; Distribution</div>
+      </div>
+      <div class="preloader-bar-line">
+        <div class="preloader-bar-progress" id="preloaderProgress"></div>
+      </div>
+    </div>
+    <div class="stair-layer bottom" id="bottomStairs">
+      <div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div><div class="stair-bar"></div>
+    </div>
+  </aside>
 
   <!-- Ambient Backdrop -->
   <div class="ambient-backdrop-fixed"></div>
@@ -716,5 +854,60 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    function playDoubleStairsPreloader() {
+      const topBars = gsap.utils.toArray('#topStairs .stair-bar');
+      const bottomBars = gsap.utils.toArray('#bottomStairs .stair-bar');
+      const preloader = document.getElementById('stairsPreloader');
+      const centerContent = document.getElementById('preloaderCenter');
+      const logo = document.getElementById('preloaderLogo');
+      const name = document.getElementById('preloaderName');
+      const sub = document.getElementById('preloaderSub');
+      const progress = document.getElementById('preloaderProgress');
+
+      if (preloader) preloader.classList.remove('loaded');
+      gsap.set(centerContent, { scale: 1, opacity: 1, y: 0 });
+      gsap.set(progress, { width: '0%' });
+      gsap.set(topBars, { scaleY: 1, transformOrigin: 'top center' });
+      gsap.set(bottomBars, { scaleY: 1, transformOrigin: 'bottom center' });
+      gsap.set(logo, { scale: 0, rotation: -45, opacity: 0 });
+      gsap.set(name, { y: 25, opacity: 0 });
+      gsap.set(sub, { y: 15, opacity: 0 });
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          if (preloader) preloader.classList.add('loaded');
+        }
+      });
+
+      tl.to(logo, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.8)' })
+        .to(name, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out' }, '-=0.35')
+        .to(sub, { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out' }, '-=0.25')
+        .to(progress, { width: '100%', duration: 0.85, ease: 'power2.inOut' }, '-=0.4')
+        .to({}, { duration: 0.2 })
+        .to(centerContent, { scale: 0.92, opacity: 0, y: -20, duration: 0.45, ease: 'power2.in' })
+        .to(topBars, {
+          scaleY: 0, duration: 0.85, ease: 'power4.inOut',
+          stagger: { each: 0.08, from: 'start' }
+        }, '-=0.15')
+        .to(bottomBars, {
+          scaleY: 0, duration: 0.85, ease: 'power4.inOut',
+          stagger: { each: 0.08, from: 'start' }
+        }, '<');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      playDoubleStairsPreloader();
+
+      document.querySelectorAll('.brand-logo').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          playDoubleStairsPreloader();
+        });
+      });
+    });
+  </script>
 </body>
 </html>
