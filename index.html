@@ -29,7 +29,7 @@
     }
 
     html {
-      scroll-behavior: smooth;
+      scroll-behavior: auto;
     }
 
     body {
@@ -3594,6 +3594,17 @@
 
     function initCinematicScrollSections() {
       playDoubleStairsPreloader();
+      if (window.location.hash) {
+        const hashTarget = document.querySelector(window.location.hash);
+        if (hashTarget) {
+          setTimeout(() => {
+            const y = hashTarget.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo(0, y);
+            applyScrollKineticMorph(true);
+            applyGalleryScrollReveal(true);
+          }, 150);
+        }
+      }
 
       if (!window.gsap || !window.ScrollTrigger) {
         setTimeout(initCinematicScrollSections, 100);
@@ -3774,13 +3785,48 @@
         scrollTrigger: { trigger: '#siteFooter', start: 'top 95%', once: true }
       });
 
-      // --- SECTION D: NAVBAR ACTIVE HIGHLIGHT ---
+      // --- SECTION D: NAVBAR ACTIVE HIGHLIGHT & UNSTUCK SMOOTH SCROLL ---
       document.querySelectorAll('.nav-link[data-nav]').forEach(link => {
         const target = document.getElementById(link.dataset.nav);
         if (!target) return;
         ScrollTrigger.create({
           trigger: target, start: 'top 55%', end: 'bottom 55%',
           onToggle: self => link.classList.toggle('is-active', self.isActive)
+        });
+      });
+
+      // Handle all internal #section anchor clicks smoothly without browser hang
+      document.querySelectorAll('a[href^="#section"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+          const href = anchor.getAttribute('href');
+          if (!href || !href.startsWith('#')) return;
+          const targetEl = document.querySelector(href);
+          if (!targetEl) return;
+          e.preventDefault();
+
+          // If hero detail view is open and clicking Products, reset it
+          if (href === '#sectionShowcase' && typeof resetToLineup === 'function' && activeIndex !== null) {
+            resetToLineup();
+          }
+
+          const targetY = targetEl.getBoundingClientRect().top + window.pageYOffset;
+          const startY = window.pageYOffset;
+          const dist = targetY - startY;
+
+          // Use controlled 650ms GSAP tween on scroll position so it never aborts or gets stuck mid-way!
+          const scrollObj = { y: startY };
+          gsap.to(scrollObj, {
+            y: targetY,
+            duration: Math.min(0.85, Math.max(0.4, Math.abs(dist) / 3500)),
+            ease: 'power3.inOut',
+            onUpdate: () => window.scrollTo(0, scrollObj.y),
+            onComplete: () => {
+              window.scrollTo(0, targetY);
+              applyScrollKineticMorph(true);
+              applyGalleryScrollReveal(true);
+              ScrollTrigger.refresh();
+            }
+          });
         });
       });
     }
