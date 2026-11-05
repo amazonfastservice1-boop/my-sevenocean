@@ -1,3 +1,7 @@
 *.py
 index.backup.html
-
+*.zip
+images/intro-frames/*.png
+images/footer_ocean_bg.jpg
+images/image copy 6.png
+images/image copy 7.png
