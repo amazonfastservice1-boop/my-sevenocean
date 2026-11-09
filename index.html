@@ -3816,12 +3816,19 @@
           hoverBonusY = -18;
         }
 
-        card.style.transform = `translate3d(${curX}px, ${curY + hoverBonusY}px, ${curZ + hoverBonusZ}px) rotateY(${curRotY}deg) rotateZ(${curRotZ}deg)`;
+        card.style.transform = `translate3d(${curX.toFixed(1)}px, ${(curY + hoverBonusY).toFixed(1)}px, ${(curZ + hoverBonusZ).toFixed(1)}px) rotateY(${curRotY.toFixed(1)}deg) rotateZ(${curRotZ.toFixed(1)}deg)`;
 
         const stackZIndex = stackLayer + 10;
         const fanZIndex = 30 - absOffset * 2;
-        card.style.zIndex = Math.round(stackZIndex + (fanZIndex - stackZIndex) * progress);
-        card.style.opacity = '1';
+        const nextZIndex = String(Math.round(stackZIndex + (fanZIndex - stackZIndex) * progress));
+        if (card.dataset.zIdx !== nextZIndex) {
+          card.dataset.zIdx = nextZIndex;
+          card.style.zIndex = nextZIndex;
+        }
+        if (card.dataset.opSet !== '1') {
+          card.dataset.opSet = '1';
+          card.style.opacity = '1';
+        }
       });
     }
 
@@ -4002,7 +4009,9 @@
 
     // Unified scroll listener
     let scrollTicking = false;
+    let lastScrollTimestamp = 0;
     window.addEventListener('scroll', () => {
+      lastScrollTimestamp = performance.now();
       if (scrollTicking) return;
       scrollTicking = true;
       requestAnimationFrame(() => {
@@ -4177,7 +4186,10 @@
     })();
 
     function animateWater() {
-      if (document.hidden) { requestAnimationFrame(animateWater); return; }
+      if (document.hidden || (performance.now() - lastScrollTimestamp < 120)) {
+        requestAnimationFrame(animateWater);
+        return;
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (const b of bubbles) {
         b.y -= b.speedY;
