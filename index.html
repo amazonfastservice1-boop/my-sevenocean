@@ -2085,12 +2085,13 @@
 
     /* ============================================================
        OUR OWN BRANDS: EDITORIAL REVEAL (Giant Word-Mark + Clip-Path Unmask)
-       Pure Load/Scroll-Triggered Cinematic Grid Unmask
+       Responsive across all screen sizes, zooms (125%, 150%) & laptop aspect ratios
        ============================================================ */
     .own-brands-section {
       position: relative;
       width: 100%;
-      height: 100vh;
+      min-height: 100vh;
+      min-height: 100svh;
       overflow: hidden;
       background: #061726;
       background-image:
@@ -2101,51 +2102,60 @@
       z-index: 32;
       border-top: 1px solid rgba(56, 189, 248, 0.2);
       border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .own-brands-section .container {
       position: relative;
       display: flex;
+      flex-direction: column;
       width: 100%;
       height: 100%;
+      flex: 1;
       overflow: hidden;
+      padding: clamp(16px, 3vh, 32px) clamp(16px, 2.5vw, 36px) 0;
     }
 
     .own-brands-section .items {
       width: 100%;
-      height: 100%;
       display: flex;
-      padding: 0 2vw;
+      align-items: flex-start;
+      justify-content: center;
+      gap: clamp(8px, 1.2vw, 18px);
       z-index: 5;
+      flex: 1;
     }
 
     .own-brands-section .items-col {
       flex: 1;
       display: flex;
-      gap: 1.5vw;
+      gap: clamp(8px, 1vw, 16px);
+      min-width: 0;
     }
 
     .own-brands-section .items-col:nth-child(2) {
-      flex: 0 0 clamp(280px, 22vw, 340px);
+      flex: 0 0 clamp(200px, 18vw, 290px);
       display: flex;
       justify-content: center;
-      margin: 0 2vw;
+      margin: 0 clamp(4px, 0.8vw, 12px);
     }
 
     .own-brands-section .item {
       position: relative;
-      top: 13vh;
-      height: clamp(260px, 32vh, 320px);
+      height: clamp(210px, 29vh, 290px);
       flex: 1;
       display: flex;
       flex-direction: column;
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(56, 189, 248, 0.22);
       backdrop-filter: blur(12px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
       transition: border-color 0.3s ease, transform 0.3s ease;
+      min-width: 0;
     }
 
     .own-brands-section .item:hover {
@@ -2154,12 +2164,13 @@
     }
 
     .own-brands-section .item-copy {
-      padding: 0.75em 1em;
-      height: 56px;
+      padding: 6px 10px;
+      min-height: 48px;
+      height: auto;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      background: rgba(4, 18, 30, 0.85);
+      background: rgba(4, 18, 30, 0.9);
       border-bottom: 1px solid rgba(56, 189, 248, 0.15);
       z-index: 2;
     }
@@ -2171,10 +2182,10 @@
 
     .own-brands-section .item-copy-wrapper p {
       position: relative;
-      margin-bottom: 0.15em;
+      margin-bottom: 0.1em;
       font-weight: 700;
-      font-size: 13px;
-      line-height: 1.1;
+      font-size: clamp(10.5px, 0.85vw, 12.5px);
+      line-height: 1.2;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
@@ -2183,10 +2194,10 @@
     }
 
     .own-brands-section .item-copy-wrapper:last-child p {
-      font-size: 11px;
+      font-size: clamp(9px, 0.72vw, 10.5px);
       font-weight: 600;
       color: #38bdf8;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       transform: translateY(50px);
     }
@@ -2199,52 +2210,53 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: clamp(8px, 1.2vw, 14px);
+      min-height: 0;
     }
 
     .own-brands-section .item-side .item-img img {
       width: 100%;
       height: 100%;
+      max-height: 190px;
       object-fit: contain;
       filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
       transition: transform 0.4s ease;
     }
 
     .own-brands-section .item-side:hover .item-img img {
-      transform: scale(1.06);
+      transform: scale(1.05);
     }
 
-    /* CENTER HERO ITEM */
+    /* CENTER HERO ITEM (KAHI) */
     .own-brands-section .item-main {
       position: relative;
-      top: 10vh;
       width: 100%;
-      height: clamp(380px, 48vh, 470px);
+      height: clamp(300px, 42vh, 410px);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      border-radius: 22px;
+      border-radius: 20px;
       background: linear-gradient(160deg, rgba(2, 132, 199, 0.16) 0%, rgba(4, 18, 30, 0.95) 100%);
       border: 1.5px solid rgba(56, 189, 248, 0.45);
       backdrop-filter: blur(16px);
-      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(14, 165, 233, 0.25);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 28px rgba(14, 165, 233, 0.25);
     }
 
     .own-brands-section .item-main .item-copy {
-      padding: 1em 1.25em;
-      height: 64px;
-      background: rgba(3, 15, 26, 0.9);
+      padding: 10px 14px;
+      min-height: 56px;
+      background: rgba(3, 15, 26, 0.92);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
     }
 
     .own-brands-section .item-main .item-copy-wrapper p {
-      font-size: 15px;
+      font-size: clamp(12.5px, 1vw, 14.5px);
       font-weight: 800;
       color: #fff;
     }
 
     .own-brands-section .item-main .item-copy-wrapper:last-child p {
-      font-size: 12px;
+      font-size: clamp(10px, 0.8vw, 11.5px);
       color: #38bdf8;
     }
 
@@ -2254,12 +2266,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: clamp(12px, 1.8vw, 20px);
+      min-height: 0;
     }
 
     .own-brands-section .item-main .item-img img {
       width: 100%;
       height: 100%;
+      max-height: 290px;
       object-fit: contain;
       transform: scale(0.5);
       clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
@@ -2268,8 +2282,9 @@
 
     /* GIANT WORD-MARK HEADLINE (SEVEN OCEAN) */
     .own-brands-section .header {
-      position: absolute;
-      bottom: 35%;
+      position: relative;
+      margin-top: auto;
+      margin-bottom: clamp(6px, 1.5vh, 20px);
       transform-origin: center center;
       width: 100%;
       display: flex;
@@ -2296,9 +2311,10 @@
     .own-brands-section .letter {
       flex: 1;
       font-family: 'Space Grotesk', -apple-system, sans-serif;
-      font-size: clamp(4.5rem, 15vw, 16vw);
+      font-size: clamp(3.2rem, 11vw, 13vw);
       font-weight: 900;
       letter-spacing: -0.04em;
+      line-height: 0.9;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -2315,15 +2331,43 @@
       transform: translateY(400px);
     }
 
-    @media (max-width: 900px) {
+    /* Laptops with 125%/150% DPI scaling or compact height (< 800px) */
+    @media (max-height: 820px) {
+      .own-brands-section .item {
+        height: 200px;
+      }
+      .own-brands-section .item-main {
+        height: 290px;
+      }
+      .own-brands-section .letter {
+        font-size: clamp(2.8rem, 9.5vw, 11vw);
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .own-brands-section .items-col {
+        gap: 8px;
+      }
+      .own-brands-section .item-copy p {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .own-brands-section {
+        height: auto;
+        min-height: 100vh;
+        padding-bottom: 40px;
+      }
       .own-brands-section .item-side {
         display: none !important;
       }
       .own-brands-section .items-col:nth-child(2) {
         flex: 1;
+        max-width: 320px;
       }
       .own-brands-section .header {
-        bottom: 45%;
+        margin-top: 24px;
       }
       .own-brands-section .header-item {
         transform: scale(0.5);
@@ -3007,21 +3051,21 @@
               <div class="item-copy-wrapper"><p>Barker Wellness</p></div>
               <div class="item-copy-wrapper"><p>(Mushroom Adaptogen)</p></div>
             </div>
-            <div class="item-img"><img src="images/barker_wellness.jpg" alt="Barker Wellness Gummies" /></div>
+            <div class="item-img"><img src="images/barker_wellness_clean.png" alt="Barker Wellness Gummies" /></div>
           </div>
           <div class="item item-side">
             <div class="item-copy">
               <div class="item-copy-wrapper"><p>HydraNate Sports</p></div>
               <div class="item-copy-wrapper"><p>(Electrolyte Drink Mix)</p></div>
             </div>
-            <div class="item-img"><img src="images/hydranate_electrolyte.jpg" alt="Hydranate Electrolyte Drink Mix" /></div>
+            <div class="item-img"><img src="images/hydranate_electrolyte_clean.png" alt="Hydranate Electrolyte Drink Mix" /></div>
           </div>
           <div class="item item-side">
             <div class="item-copy">
               <div class="item-copy-wrapper"><p>Strutz® Sole Angel®</p></div>
               <div class="item-copy-wrapper"><p>(Cushioned Arch Support)</p></div>
             </div>
-            <div class="item-img"><img src="images/strutz_arch_support.jpg" alt="Strutz Arch Support" /></div>
+            <div class="item-img"><img src="images/strutz_arch_support_clean.png" alt="Strutz Arch Support" /></div>
           </div>
         </div>
 
@@ -3043,7 +3087,7 @@
               <div class="item-copy-wrapper"><p>Olive Gold 03®</p></div>
               <div class="item-copy-wrapper"><p>(Super Oxygen Cream)</p></div>
             </div>
-            <div class="item-img"><img src="images/olive_gold_03.png" alt="Olive Gold 03 Cream" /></div>
+            <div class="item-img"><img src="images/olive_gold_03_balanced.png" alt="Olive Gold 03 Cream" /></div>
           </div>
           <div class="item item-side">
             <div class="item-copy">
@@ -3055,9 +3099,9 @@
           <div class="item item-side">
             <div class="item-copy">
               <div class="item-copy-wrapper"><p>Barker Wellness Co.</p></div>
-              <div class="item-copy-wrapper"><p>(Rest &amp; Balance SKU)</p></div>
+              <div class="item-copy-wrapper"><p>(Nighttime Sleep SKU)</p></div>
             </div>
-            <div class="item-img"><img src="images/barker_wellness.jpg" alt="Barker Wellness" /></div>
+            <div class="item-img"><img src="images/barker_wellness_clean.png" alt="Barker Wellness" /></div>
           </div>
         </div>
       </div>
@@ -3296,7 +3340,7 @@
         shortName: 'Barker Gummies',
         price: '$38.00',
         priceNum: 38.00,
-        image: 'images/barker_wellness.jpg',
+        image: 'images/barker_wellness_clean.png',
         swatch: '#7c3aed',
         color: '#6d28d9',
         auraLeft: 'rgba(124, 58, 237, 0.20)',
@@ -3310,7 +3354,7 @@
         shortName: 'HydraNate Drink Mix',
         price: '$26.99',
         priceNum: 26.99,
-        image: 'images/hydranate_electrolyte.jpg',
+        image: 'images/hydranate_electrolyte_clean.png',
         swatch: '#0284c7',
         color: '#0369a1',
         auraLeft: 'rgba(2, 132, 199, 0.22)',
@@ -3324,7 +3368,7 @@
         shortName: 'Strutz Arch Support',
         price: '$19.95',
         priceNum: 19.95,
-        image: 'images/strutz_arch_support.jpg',
+        image: 'images/strutz_arch_support_clean.png',
         swatch: '#84cc16',
         color: '#65a30d',
         auraLeft: 'rgba(132, 204, 22, 0.20)',
@@ -3338,7 +3382,7 @@
         shortName: 'Olive Gold 03 Cream',
         price: '$49.00',
         priceNum: 49.00,
-        image: 'images/olive_gold_03.png',
+        image: 'images/olive_gold_03_balanced.png',
         swatch: '#eab308',
         color: '#ca8a04',
         auraLeft: 'rgba(234, 179, 8, 0.22)',
@@ -3383,7 +3427,7 @@
         tag: 'Wellness Tier',
         price: '$38.00',
         priceNum: 38.00,
-        image: 'images/barker_wellness.jpg',
+        image: 'images/barker_wellness_clean.png',
         color: '#7c3aed',
         glow: 'rgba(124, 58, 237, 0.35)',
         formula: 'Authorized Wholesale • Case Pack Ready'
@@ -3395,7 +3439,7 @@
         tag: 'High Velocity',
         price: '$26.99',
         priceNum: 26.99,
-        image: 'images/hydranate_electrolyte.jpg',
+        image: 'images/hydranate_electrolyte_clean.png',
         color: '#0284c7',
         glow: 'rgba(2, 132, 199, 0.35)',
         formula: 'Sugar Free • 18 Servings Box'
@@ -3419,7 +3463,7 @@
         tag: 'Doctor Recommended',
         price: '$19.95',
         priceNum: 19.95,
-        image: 'images/strutz_arch_support.jpg',
+        image: 'images/strutz_arch_support_clean.png',
         color: '#65a30d',
         glow: 'rgba(101, 163, 13, 0.35)',
         formula: 'Plantar Fasciitis Relief • Retail Pack'
@@ -3431,7 +3475,7 @@
         tag: 'Premier Care',
         price: '$49.00',
         priceNum: 49.00,
-        image: 'images/olive_gold_03.png',
+        image: 'images/olive_gold_03_balanced.png',
         color: '#ca8a04',
         glow: 'rgba(202, 138, 4, 0.35)',
         formula: 'Super Oxygenated • 100ml Unscented'
@@ -3441,10 +3485,10 @@
     // SECTION 3: 20 Luxury Marine Products Grid (Newly generated packaging + marine line)
     const SECTION3_PRODUCTS = [
       { name: 'KAHI Seoul Multi Balm', tag: 'Salmon PDRN', price: '$34.00', num: 34, img: 'images/kahi_multi_balm.png', color: '#e11d48' },
-      { name: 'Barker Wellness Gummies', tag: 'Adaptogens', price: '$38.00', num: 38, img: 'images/barker_wellness.jpg', color: '#7c3aed' },
-      { name: 'HydraNate Drink Mix', tag: 'Electrolytes', price: '$26.99', num: 26.99, img: 'images/hydranate_electrolyte.jpg', color: '#0284c7' },
-      { name: 'Strutz Arch Compression', tag: 'Foot Pain Relief', price: '$19.95', num: 19.95, img: 'images/strutz_arch_support.jpg', color: '#65a30d' },
-      { name: 'Olive Gold 03 Cream', tag: 'Super Oxygen', price: '$49.00', num: 49, img: 'images/olive_gold_03.png', color: '#ca8a04' },
+      { name: 'Barker Wellness Gummies', tag: 'Adaptogens', price: '$38.00', num: 38, img: 'images/barker_wellness_clean.png', color: '#7c3aed' },
+      { name: 'HydraNate Drink Mix', tag: 'Electrolytes', price: '$26.99', num: 26.99, img: 'images/hydranate_electrolyte_clean.png', color: '#0284c7' },
+      { name: 'Strutz Arch Compression', tag: 'Foot Pain Relief', price: '$19.95', num: 19.95, img: 'images/strutz_arch_support_clean.png', color: '#65a30d' },
+      { name: 'Olive Gold 03 Cream', tag: 'Super Oxygen', price: '$49.00', num: 49, img: 'images/olive_gold_03_balanced.png', color: '#ca8a04' },
       { name: 'OLAY Foaming Cleanser', tag: '7-in-1 Total Effects', price: '$28.50', num: 28.5, img: 'images/olay_cleanser.png', color: '#b45309' },
       { name: 'Crystal Droplet Perfume', tag: 'Extrait', price: '$135.00', num: 135, img: 'images/luxury_oceanic_perfume_1793454482906.webp', color: '#0284c7' },
       { name: 'Marine Night Serum Dropper', tag: 'Night Repair', price: '$94.00', num: 94, img: 'images/marine_night_serum_1793454501491.webp', color: '#1e40af' },
