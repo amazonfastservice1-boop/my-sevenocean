@@ -4850,6 +4850,53 @@
         });
       });
 
+      // --- SECTION AA: OUR OWN BRANDS EDITORIAL REVEAL TIMELINE (Giant Word-Mark + Clip-Path Unmask) ---
+      const ownBrandsSection = document.getElementById('sectionOwnBrands');
+      if (ownBrandsSection) {
+        // Pre-set initial states for Own Brands reveal
+        gsap.set('#sectionOwnBrands .letter-wrapper', { y: 400 });
+        gsap.set('#sectionOwnBrands .item-copy-wrapper p', { y: 50 });
+        gsap.set('#sectionOwnBrands .header-item-1', { left: '18vw', scale: 0.25 });
+        gsap.set('#sectionOwnBrands .header-item-2', { right: '18vw', scale: 0.25 });
+        gsap.set('#sectionOwnBrands .header', { bottom: '35%' });
+        gsap.set('#sectionOwnBrands .item-main .item-img img', { scale: 0.5, clipPath: 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)' });
+        gsap.set('#sectionOwnBrands .item-side .item-img', { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' });
+
+        const ownBrandsTl = gsap.timeline({
+          paused: true,
+          delay: 0.2,
+          defaults: { duration: 1, ease: 'power3.out' }
+        });
+
+        // Phase A — headline letters rise (S-E-V-E-N O-C-E-A-N)
+        ownBrandsTl.to('#sectionOwnBrands .letter-wrapper', { y: 0, stagger: 0.1 });
+
+        // Phase B — words nudge apart + center image un-clips
+        ownBrandsTl.to('#sectionOwnBrands .header-item-1', { left: '12vw' })
+          .to('#sectionOwnBrands .header-item-2', { right: '8vw' }, '<')
+          .to('#sectionOwnBrands .item-main .item-img img', { clipPath: 'polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)' }, '<');
+
+        // Phase C — the big finish: scale, drop to bottom, side thumbnails unmask, copy rises
+        ownBrandsTl.to('#sectionOwnBrands .header-item-1', { left: 0, scale: 1 })
+          .to('#sectionOwnBrands .header-item-2', { right: 0, scale: 1 }, '<')
+          .to('#sectionOwnBrands .item-main .item-img img', { scale: 1 }, '<')
+          .to('#sectionOwnBrands .item-side .item-img', { clipPath: 'polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)', stagger: 0.1 }, '<')
+          .to('#sectionOwnBrands .header', { bottom: 0 }, '<')
+          .to('#sectionOwnBrands .item-copy-wrapper p', { y: 0, stagger: 0.05 }, '<');
+
+        let ownBrandsPlayed = false;
+        ScrollTrigger.create({
+          trigger: '#sectionOwnBrands',
+          start: 'top 75%',
+          onEnter: () => {
+            if (!ownBrandsPlayed) {
+              ownBrandsPlayed = true;
+              ownBrandsTl.play();
+            }
+          }
+        });
+      }
+
       // --- SECTION B: FAQS 3D KINETIC CASCADE ---
       // 1. FAQ Title entrance
       gsap.fromTo('.faq-section .faq-eyebrow, .faq-title, .faq-lead',
