@@ -1339,42 +1339,64 @@
     }
 
     /* ============================================================
-       SECTION 3: "SCROLL IMAGES REVEAL 001" (Skiper32 / Codrops 3D Grid)
-       Featuring 20 luxury marine product cards in 3D parallax!
+       SECTION 3: 3D SCROLL TUNNEL (My Seven Ocean Oceanic Theme)
+       Infinite 6-ring × 4-plate ellipse tunnel with depth veil & velocity speed-smear
        ============================================================ */
     .gallery-scroll-container {
+      --tunnel-bg: #e6f4fe;
+      --tunnel-ink: #071c2b;
+      --tunnel-dim: #476882;
+      --tunnel-accent: #0284c7;
+      --tunnel-cyan: #06b6d4;
+      --tunnel-teal: #2dd4bf;
       position: relative;
       width: 100vw;
-      height: 350vh; /* Pinned scroll space for deep 3D flight */
+      height: 360vh; /* Pinned scroll runway while wheel drives infinite tunnel */
       z-index: 35;
       background: transparent;
     }
 
-    .gallery-sticky-stage {
+    .gallery-sticky-stage.spotlight {
       position: sticky;
       top: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100svh;
+      background-color: var(--tunnel-bg);
+      background-image:
+        radial-gradient(46% 42% at 22% 18%, rgba(2, 132, 199, 0.18) 0%, transparent 100%),
+        radial-gradient(42% 38% at 80% 26%, rgba(56, 189, 248, 0.20) 0%, transparent 100%),
+        radial-gradient(50% 44% at 62% 84%, rgba(6, 182, 212, 0.18) 0%, transparent 100%);
+      perspective: 1000px;
+      perspective-origin: 50% 50%;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1200px;
-      perspective-origin: 50% 50%;
       contain: layout paint;
     }
 
-    /* Center Impactful Editorial Title */
+    /* Soft Oceanic Frame Vignette around the 3D Tunnel */
+    .tunnel-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(230, 244, 254, 0.88) 0%, transparent 16%, transparent 84%, rgba(230, 244, 254, 0.88) 100%),
+        linear-gradient(90deg, rgba(230, 244, 254, 0.72) 0%, transparent 14%, transparent 86%, rgba(230, 244, 254, 0.72) 100%),
+        radial-gradient(85% 75% at 50% 50%, transparent 56%, rgba(218, 238, 253, 0.68) 100%);
+    }
+
+    /* Center Impactful Editorial Title & Chrome */
     .gallery-center-headline {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate3d(-50%, -50%, 0);
       text-align: center;
-      width: min(860px, 92vw);
+      width: min(640px, 88vw);
       z-index: 20;
       pointer-events: none;
-      will-change: transform, opacity;
     }
 
     .gallery-spec-badge {
@@ -1383,7 +1405,7 @@
       gap: 8px;
       padding: 6px 18px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(14, 165, 233, 0.28);
       box-shadow: 0 10px 28px rgba(8, 47, 73, 0.08);
       color: #0369a1;
@@ -1395,12 +1417,12 @@
     }
 
     .gallery-title-main {
-      font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+      font-size: clamp(2.3rem, 4.4vw, 4rem);
       font-weight: 800;
       line-height: 1.05;
       letter-spacing: -0.04em;
       color: #071c2b;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       text-transform: uppercase;
     }
 
@@ -1411,11 +1433,11 @@
     }
 
     .gallery-subtitle {
-      font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+      font-size: clamp(0.9rem, 1.08vw, 1.04rem);
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 16px;
-      line-height: 1.6;
+      max-width: 540px;
+      margin: 0 auto 14px;
+      line-height: 1.55;
       font-weight: 500;
     }
 
@@ -1425,8 +1447,8 @@
       gap: 12px;
       padding: 6px 18px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(14, 165, 233, 0.22);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(14, 165, 233, 0.24);
       font-size: 11.5px;
       font-weight: 700;
       color: #0369a1;
@@ -1447,145 +1469,152 @@
       border-radius: 999px;
     }
 
-    /* 3D Spatial Canvas for the 20 Product Cards */
-    .gallery-3d-space {
+    /* 3D Scroll Tunnel Container (.tunnel) */
+    .tunnel {
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       transform-style: preserve-3d;
+      z-index: 4;
       pointer-events: none;
     }
 
-    .reveal-card {
+    /* Each Depth Ring (.layer) */
+    .tunnel .layer {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: clamp(210px, 17vw, 270px);
-      height: clamp(260px, 22vw, 330px);
-      margin-left: calc(-1 * clamp(210px, 17vw, 270px) / 2);
-      margin-top: calc(-1 * clamp(260px, 22vw, 330px) / 2);
-      border-radius: 22px;
-      backface-visibility: hidden;
-      contain: layout style paint;
-      pointer-events: auto;
-      cursor: pointer;
-      will-change: transform, opacity;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
-    .reveal-card-inner {
+    /* Each 180×220 px Elliptical Plate (.item) with Rotate–Scale–Unrotate Speed Smear */
+    .tunnel .item {
       position: absolute;
-      inset: 0;
-      border-radius: 22px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.90) 100%);
-      border: 1.5px solid rgba(255, 255, 255, 0.95);
-      box-shadow: 0 12px 28px rgba(7, 36, 56, 0.10);
+      width: 180px;
+      height: 220px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.97) 0%, rgba(235, 248, 255, 0.93) 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.96);
+      box-shadow: 0 14px 32px rgba(7, 36, 56, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 16px 18px;
-      overflow: hidden;
+      padding: 12px 14px;
+      pointer-events: auto;
+      cursor: pointer;
+      transform: rotate(var(--tilt, 0deg))
+                 scale(var(--stretch, 1), var(--squash, 1))
+                 rotate(calc(-1 * var(--tilt, 0deg)));
+      will-change: transform;
       backface-visibility: hidden;
-      transform: translateZ(0);
-      transition: transform 0.25s ease, border-color 0.25s ease;
     }
 
-    .reveal-card:hover .reveal-card-inner {
-      transform: scale(1.06) translateZ(0);
-      border-color: rgba(56, 189, 248, 0.8);
-      z-index: 100;
-    }
-
-    .reveal-card-glow {
+    /* Hue-neutral inner vignette that seats the product plate in the oceanic stage */
+    .tunnel .item::before {
+      content: "";
       position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--tile-glow, rgba(14, 165, 233, 0.22)) 0%, transparent 70%);
+      inset: 0;
+      z-index: 1;
       pointer-events: none;
+      background: radial-gradient(120% 100% at 50% 45%, transparent 45%, rgba(14, 116, 144, 0.12) 100%);
     }
 
-    .reveal-card-header {
+    .tunnel .item-header {
+      position: relative;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      z-index: 2;
     }
 
-    .reveal-card-tag {
-      font-size: 9.5px;
+    .tunnel .item-tag {
+      font-size: 8.5px;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--tile-color, #0284c7);
-      padding: 2.5px 8px;
+      padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(14, 165, 233, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(14, 165, 233, 0.22);
     }
 
-    .reveal-card-num {
+    .tunnel .item-num {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 11.5px;
+      font-size: 10.5px;
       font-weight: 700;
-      color: #94a3b8;
+      color: #64748b;
     }
 
-    .reveal-card-img-wrap {
+    .tunnel .item-img-wrap {
       position: relative;
+      z-index: 2;
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 2;
-      padding: 6px 0;
+      padding: 4px 0;
+      min-height: 0;
     }
 
-    .reveal-card-img {
+    .tunnel .item img {
       width: 100%;
       height: 100%;
-      max-height: 170px;
+      max-height: 128px;
       object-fit: contain;
-      backface-visibility: hidden;
-      transition: transform 0.3s ease;
+      filter: contrast(1.06) saturate(1.06);
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
-    .reveal-card:hover .reveal-card-img {
-      transform: translateY(-6px) scale(1.08);
-    }
-
-    .reveal-card-footer {
+    .tunnel .item-footer {
+      position: relative;
       z-index: 2;
-      border-top: 1px solid rgba(14, 165, 233, 0.12);
-      padding-top: 10px;
+      border-top: 1px solid rgba(14, 165, 233, 0.14);
+      padding-top: 7px;
     }
 
-    .reveal-card-name {
-      font-size: 13.5px;
+    .tunnel .item-name {
+      font-size: 11.5px;
       font-weight: 800;
       color: #071c2b;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
-    .reveal-card-price-row {
+    .tunnel .item-price-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 10px;
+      color: #476882;
       font-weight: 600;
     }
 
-    .reveal-card-price {
-      font-size: 13px;
+    .tunnel .item-price {
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--tile-color, #0284c7);
+    }
+
+    /* Oceanic Depth Veil driven by --overlay (1 in far depths -> 0 at camera -> 1 past lens) */
+    .tunnel .item-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: var(--tunnel-bg, #e6f4fe);
+      opacity: var(--overlay, 1);
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tunnel .item {
+        transform: none;
+        will-change: auto;
+      }
     }
 
     /* Cart Drawer */
@@ -2674,16 +2703,19 @@
   </div>
 
   <!-- ============================================================
-       SECTION 3: COMPLETE DISTRIBUTION CATALOG
+       SECTION 3: 3D SCROLL TUNNEL DISTRIBUTION CATALOG
        ============================================================ -->
   <div class="gallery-scroll-container" id="sectionGalleryTrigger">
-    <div class="gallery-sticky-stage">
+    <section class="gallery-sticky-stage spotlight">
+      <!-- Oceanic Frame Vignette -->
+      <div class="tunnel-vignette" aria-hidden="true"></div>
+
       <!-- Center Editorial Headline -->
       <div class="gallery-center-headline" id="galleryCenterHeadline">
         <div class="gallery-spec-badge">✦ Verified Wholesale Portfolio</div>
         <h2 class="gallery-title-main">My Seven Ocean<br /><span>Distribution Catalog</span></h2>
         <p class="gallery-subtitle">
-          Browse 20+ authentic skincare, beauty, and personal care formulations distributed by My Seven Ocean LLC.
+          Browse authentic skincare, beauty, and personal care formulations distributed by My Seven Ocean LLC.
           Sourced directly from authorized manufacturers for retail and e-commerce supply.
         </p>
         <div class="gallery-scroll-pill">
@@ -2695,11 +2727,9 @@
         </div>
       </div>
 
-      <!-- Product Cards Container -->
-      <div class="gallery-3d-space" id="gallery3dSpace">
-        <!-- 20 Product Cards populated via JS -->
-      </div>
-    </div>
+      <!-- 3D Scroll Tunnel Container (.tunnel -> .layer × 6 -> .item × 4) -->
+      <div class="tunnel" id="gallery3dSpace"></div>
+    </section>
   </div>
 
   <!-- ============================================================
@@ -3084,6 +3114,8 @@
       { name: 'Marine Repair Elixir', tag: 'Barrier Shield', price: '$78.50', num: 78.5, img: 'images/image copy 2.webp', color: '#059669' },
       { name: 'Ocean Mist Flacon', tag: 'Atmosphere', price: '$115.00', num: 115, img: 'images/image copy 3.webp', color: '#0369a1' },
       { name: 'Velisé Hydra Bloom Cream', tag: 'Cloud Velvet', price: '$86.00', num: 86, img: 'images/image copy 4.webp', color: '#db2777' },
+      { name: 'KAHI PDRN Collagen Multi Balm', tag: 'Salmon PDRN', price: '$34.00', num: 34, img: 'images/kahi_multi_balm.png', color: '#e11d48' },
+      { name: 'OLAY Total Effects Foaming Cleanser', tag: '7-in-1 Care', price: '$28.50', num: 28.5, img: 'images/olay_cleanser.png', color: '#b45309' },
       { name: 'Glacial Mineral Drops', tag: '72 Trace Ions', price: '$72.00', num: 72, img: 'images/marine_night_serum_1793454501491.webp', color: '#0284c7' },
       { name: 'Reef Botanical Infusion', tag: 'Active Coral', price: '$120.00', num: 120, img: 'images/moisturizing_cream_jar_1793454520456.webp', color: '#db2777' },
       { name: 'Sea Squalane Barrier', tag: 'Cell Lipids', price: '$98.00', num: 98, img: 'images/emerald_algae_ampoule_1793454545965.webp', color: '#059669' },
@@ -3833,181 +3865,193 @@
     }
 
     // =========================================================================
-    // 5. SECTION 3: "SCROLL IMAGES REVEAL 001" (Skiper32 / Codrops 3D Grid)
-    //    20 Marine Product Cards that rotate, translate and fade in 3D parallax!
+    // 5. SECTION 3: 3D SCROLL TUNNEL (Infinite Elliptical Rings + Speed Smear)
+    //    6 depth rings × 4 product plates on an ellipse, driven by gsap.ticker
     // =========================================================================
     const sectionGalleryTrigger = document.getElementById('sectionGalleryTrigger');
-    const gallery3dSpace = document.getElementById('gallery3dSpace');
+    const tunnelEl = document.getElementById('gallery3dSpace');
     const galleryProgressFill = document.getElementById('galleryProgressFill');
     const galleryPctLabel = document.getElementById('galleryPctLabel');
     const galleryCenterHeadline = document.getElementById('galleryCenterHeadline');
 
-    // Generate 22 distinct 3D orbital trajectory configs for all 22 catalog cards
-    const revealCardConfigs = [
-      // Ring 1: Close foreground orbits
-      { baseX: -440, baseY: -240, startZ: -900, endZ: 380, rotX: -18, rotY: 24, rotZ: -8, speed: 1.15 },
-      { baseX: 440, baseY: -260, startZ: -800, endZ: 320, rotX: 16, rotY: -22, rotZ: 10, speed: 1.05 },
-      { baseX: -460, baseY: 220, startZ: -700, endZ: 410, rotX: 20, rotY: 26, rotZ: 12, speed: 1.25 },
-      { baseX: 450, baseY: 240, startZ: -950, endZ: 360, rotX: -22, rotY: -25, rotZ: -12, speed: 1.1 },
+    const CONFIG = { totalImages: 12, scrollSpeed: 2, layerGap: 2500, lerp: 0.07, speedStretch: 0.3 };
 
-      // Ring 2: Mid-distance flankers
-      { baseX: -740, baseY: -80, startZ: -1100, endZ: 210, rotX: -12, rotY: 34, rotZ: -6, speed: 0.95 },
-      { baseX: 740, baseY: -60, startZ: -1050, endZ: 240, rotX: 14, rotY: -32, rotZ: 8, speed: 0.98 },
-      { baseX: -700, baseY: 320, startZ: -1200, endZ: 180, rotX: 22, rotY: 30, rotZ: 14, speed: 1.3 },
-      { baseX: 710, baseY: 310, startZ: -1150, endZ: 200, rotX: -20, rotY: -30, rotZ: -15, speed: 1.22 },
+    // Speed-smear tuning (module constants)
+    const VELOCITY_LERP     = 0.12;
+    const VELOCITY_REF      = 35;
+    const VELOCITY_DEADZONE = 0.4;
+    const SQUASH_RATIO      = 0.45;
+    const MAX_DEFORM        = 0.6;
 
-      // Ring 3: Upper & lower orbital crests
-      { baseX: -220, baseY: -420, startZ: -1300, endZ: 140, rotX: -30, rotY: 15, rotZ: -18, speed: 1.08 },
-      { baseX: 220, baseY: -430, startZ: -1250, endZ: 160, rotX: -28, rotY: -16, rotZ: 16, speed: 1.14 },
-      { baseX: -240, baseY: 420, startZ: -1400, endZ: 110, rotX: 32, rotY: 18, rotZ: 14, speed: 1.35 },
-      { baseX: 230, baseY: 430, startZ: -1350, endZ: 120, rotX: 29, rotY: -17, rotZ: -16, speed: 1.28 },
+    // Derived tunnel counts
+    const contentLayerCount = Math.ceil(CONFIG.totalImages / 4); // 3 unique rings of 4 images
+    const totalLayerCount   = Math.max(contentLayerCount, 6);    // 6 rings rendered
+    const tunnelDepth       = totalLayerCount * CONFIG.layerGap; // 15000 (modulo wrap length)
+    const visibleDepth      = 3 * CONFIG.layerGap;               // 7500  (fade-in distance)
+    const exitPoint         = 1500;                              // where a ring exits past the lens
+    const initialScroll     = 750;                               // starting virtual-scroll offset
 
-      // Ring 4: Outer deep abyss anchors
-      { baseX: -920, baseY: -340, startZ: -1600, endZ: -50, rotX: -15, rotY: 42, rotZ: -10, speed: 0.85 },
-      { baseX: 920, baseY: -320, startZ: -1550, endZ: -20, rotX: 18, rotY: -40, rotZ: 12, speed: 0.88 },
-      { baseX: -900, baseY: 220, startZ: -1700, endZ: -60, rotX: 24, rotY: 38, rotZ: 16, speed: 1.4 },
-      { baseX: 910, baseY: 200, startZ: -1650, endZ: -30, rotX: -22, rotY: -36, rotZ: -14, speed: 1.32 },
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stretchBudget = prefersReducedMotion
+      ? 0
+      : Math.max(0, Math.min(MAX_DEFORM, CONFIG.speedStretch));
 
-      // Ring 5: Deep background constellations
-      { baseX: -550, baseY: -520, startZ: -1900, endZ: -140, rotX: -36, rotY: 28, rotZ: -22, speed: 0.78 },
-      { baseX: 560, baseY: -510, startZ: -1850, endZ: -110, rotX: -34, rotY: -26, rotZ: 20, speed: 0.82 },
-      { baseX: -540, baseY: 520, startZ: -1950, endZ: -150, rotX: 38, rotY: 25, rotZ: 20, speed: 1.45 },
-      { baseX: 550, baseY: 530, startZ: -1920, endZ: -130, rotX: 36, rotY: -24, rotZ: -18, speed: 1.42 },
+    const layerData = [];
 
-      // Ring 6: Extra flankers for 21st & 22nd SKUs
-      { baseX: -820, baseY: -460, startZ: -1480, endZ: 60, rotX: -24, rotY: 32, rotZ: -14, speed: 1.02 },
-      { baseX: 820, baseY: 460, startZ: -1520, endZ: 40, rotX: 24, rotY: -30, rotZ: 14, speed: 1.18 }
-    ];
+    function initSection3Tunnel() {
+      tunnelEl.innerHTML = '';
+      layerData.length = 0;
 
-    const revealCardEls = [];
+      const radiusX = 400;
+      const radiusY = 280;
 
-    function initSection3Gallery() {
-      gallery3dSpace.innerHTML = '';
-      revealCardEls.length = 0;
+      for (let i = 0; i < totalLayerCount; i++) {
+        const layerEl = document.createElement('div');
+        layerEl.className = 'layer';
+        const imageStartIndex = (i % contentLayerCount) * 4;
 
-      SECTION3_PRODUCTS.forEach((product, i) => {
-        const cfg = revealCardConfigs[i] || revealCardConfigs[0];
-        const card = document.createElement('div');
-        card.className = 'reveal-card';
-        card.dataset.index = i;
-        card.style.setProperty('--tile-color', product.color);
-        card.style.setProperty('--tile-glow', `${product.color}40`);
-        // Static z-index assigned once at init to avoid per-frame layer tree rebuilds
-        card.style.zIndex = String(Math.round(cfg.startZ + 2500));
+        for (let j = 0; j < 4; j++) {
+          const imageNumber = imageStartIndex + j + 1;
+          if (imageNumber > CONFIG.totalImages) break;
 
-        card.innerHTML = `
-          <div class="reveal-card-inner">
-            <div class="reveal-card-glow"></div>
-            <div class="reveal-card-header">
-              <span class="reveal-card-tag">${product.tag}</span>
-              <span class="reveal-card-num">#${(i + 1).toString().padStart(2, '0')}</span>
+          const product = SECTION3_PRODUCTS[(imageNumber - 1) % SECTION3_PRODUCTS.length];
+          const angle = (j / 4) * Math.PI * 2 - Math.PI / 2;
+          const itemX = Math.cos(angle) * radiusX - 90;
+          const itemY = Math.sin(angle) * radiusY - 110;
+
+          const itemEl = document.createElement('div');
+          itemEl.className = 'item';
+          itemEl.style.left = `${itemX}px`;
+          itemEl.style.top = `${itemY}px`;
+          itemEl.style.setProperty('--tilt', `${(angle * 180) / Math.PI}deg`);
+          itemEl.style.setProperty('--tile-color', product.color);
+
+          itemEl.innerHTML = `
+            <div class="item-header">
+              <span class="item-tag">${product.tag}</span>
+              <span class="item-num">#${String(imageNumber).padStart(2, '0')}</span>
             </div>
-            <div class="reveal-card-img-wrap">
-              <img class="reveal-card-img" src="${product.img}" alt="${product.name}" loading="eager" decoding="async" draggable="false" />
+            <div class="item-img-wrap">
+              <img src="${product.img}" alt="${product.name}" loading="eager" decoding="async" draggable="false" />
             </div>
-            <div class="reveal-card-footer">
-              <div class="reveal-card-name">${product.name}</div>
-              <div class="reveal-card-price-row">
+            <div class="item-footer">
+              <div class="item-name">${product.name}</div>
+              <div class="item-price-row">
                 <span>Authorized SKU</span>
-                <span class="reveal-card-price">${product.price}</span>
+                <span class="item-price">${product.price}</span>
               </div>
             </div>
-          </div>
-        `;
+            <div class="item-overlay"></div>
+          `;
 
-        card.addEventListener('mouseenter', () => playWaterDrop(420 + i * 22));
-        card.addEventListener('click', () => {
-          addToRitualBag({
-            id: `gallery-${i}`,
-            variant: product.name,
-            price: product.price,
-            priceNum: product.num,
-            image: product.img
-          }, card);
-        });
+          itemEl.addEventListener('mouseenter', () => playWaterDrop(420 + (imageNumber - 1) * 22));
+          itemEl.addEventListener('click', () => {
+            addToRitualBag({
+              id: `tunnel-${imageNumber}`,
+              variant: product.name,
+              price: product.price,
+              priceNum: product.num,
+              image: product.img
+            }, itemEl);
+          });
 
-        gallery3dSpace.appendChild(card);
-        revealCardEls.push({ el: card, cfg, isVisible: true });
+          layerEl.appendChild(itemEl);
+        }
+
+        tunnelEl.appendChild(layerEl);
+        layerData.push({ el: layerEl, baseZ: -i * CONFIG.layerGap });
+      }
+    }
+
+    initSection3Tunnel();
+
+    function calculateOverlay(z) {
+      if (z > exitPoint) return 1;                 // z > 1500: past the lens -> fully veiled
+      if (z > 0) return z / exitPoint;             // 0 < z < 1500: veiling as it exits (0 -> 1)
+      if (z > -visibleDepth) {                     // -7500 < z < 0: fading IN from the depths
+        const progress = Math.abs(z) / visibleDepth;
+        return progress * progress;                // QUADRATIC ease-in of the depth veil
+      }
+      return 1;                                    // z <= -7500: too far -> fully veiled
+    }
+
+    let targetScroll     = initialScroll;
+    let currentScroll    = initialScroll;
+    let smoothedVelocity = 0;
+    let lastGalleryPct   = -1;
+    let touchLastY       = 0;
+
+    window.addEventListener('wheel', (e) => {
+      targetScroll += e.deltaY * CONFIG.scrollSpeed;
+    }, { passive: true });
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        touchLastY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        const curY = e.touches[0].clientY;
+        const deltaY = touchLastY - curY;
+        touchLastY = curY;
+        targetScroll += deltaY * CONFIG.scrollSpeed * 1.5;
+      }
+    }, { passive: true });
+
+    function tickTunnel() {
+      const previousScroll = currentScroll;
+      currentScroll += (targetScroll - currentScroll) * CONFIG.lerp;
+      smoothedVelocity += (currentScroll - previousScroll - smoothedVelocity) * VELOCITY_LERP;
+      if (Math.abs(smoothedVelocity) < VELOCITY_DEADZONE) smoothedVelocity = 0;
+      const speed = Math.min(1, Math.abs(smoothedVelocity) / VELOCITY_REF);
+
+      // Update active catalog progress indicator from infinite tunnel cycle
+      const cyclePct = Math.round(((((currentScroll - initialScroll) % tunnelDepth) + tunnelDepth) % tunnelDepth) / tunnelDepth * 100);
+      if (cyclePct !== lastGalleryPct) {
+        lastGalleryPct = cyclePct;
+        galleryProgressFill.style.width = `${cyclePct}%`;
+        galleryPctLabel.textContent = `${cyclePct}% Browsed`;
+      }
+
+      layerData.forEach((layer) => {
+        let z = layer.baseZ + currentScroll;
+        z = ((z % tunnelDepth) + tunnelDepth) % tunnelDepth;
+        z = z - tunnelDepth + exitPoint;
+
+        const overlay = calculateOverlay(z);
+        const proximity = Math.min(1, Math.max(0, (z + visibleDepth) / (visibleDepth + exitPoint)));
+        const deform = speed * stretchBudget * proximity;
+
+        if (window.gsap) {
+          gsap.set(layer.el, {
+            z: z,
+            '--overlay': Math.min(1, Math.max(0, overlay)),
+            '--stretch': 1 + deform,
+            '--squash': 1 - deform * SQUASH_RATIO,
+            visibility: overlay >= 1 ? 'hidden' : 'visible'
+          });
+        } else {
+          layer.el.style.transform = `translate3d(0px, 0px, ${z.toFixed(1)}px)`;
+          layer.el.style.setProperty('--overlay', String(Math.min(1, Math.max(0, overlay))));
+          layer.el.style.setProperty('--stretch', String(1 + deform));
+          layer.el.style.setProperty('--squash', String(1 - deform * SQUASH_RATIO));
+          layer.el.style.visibility = overlay >= 1 ? 'hidden' : 'visible';
+        }
       });
     }
 
-    initSection3Gallery();
-
-    let lastGalleryProgress = -1;
-    let lastGalleryPct = -1;
-    let headlineIsFaded = false;
-
-    function applyGalleryScrollReveal(force) {
-      const rect = sectionGalleryTrigger.getBoundingClientRect();
-      if (!force && (rect.bottom < -80 || rect.top > window.innerHeight + 80)) return;
-      const totalScrollable = rect.height - window.innerHeight;
-      const scrolled = -rect.top;
-      let progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
-      if (!force && Math.abs(progress - lastGalleryProgress) < 0.0004) return;
-      lastGalleryProgress = progress;
-
-      const pct = Math.round(progress * 100);
-      if (pct !== lastGalleryPct) {
-        lastGalleryPct = pct;
-        galleryProgressFill.style.width = `${pct}%`;
-        galleryPctLabel.textContent = `${pct}% Browsed`;
-      }
-
-      // Pure GPU headline fade without CSS transition conflict
-      if (progress > 0.8) {
-        headlineIsFaded = true;
-        const fadeP = progress - 0.8;
-        galleryCenterHeadline.style.opacity = Math.max(0.12, 1 - fadeP * 4).toFixed(2);
-        galleryCenterHeadline.style.transform = `translate3d(-50%, -50%, 0) translateY(${(-fadeP * 50).toFixed(1)}px) scale(${(1 - fadeP * 0.1).toFixed(3)})`;
-      } else if (headlineIsFaded || force) {
-        headlineIsFaded = false;
-        galleryCenterHeadline.style.opacity = '1';
-        galleryCenterHeadline.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
-      }
-
-      // Pure GPU transform + opacity loop (zero filter:blur, zero zIndex thrashing)
-      for (let i = 0; i < revealCardEls.length; i++) {
-        const item = revealCardEls[i];
-        const cfg = item.cfg;
-        const cardProgress = Math.max(0, Math.min(1, progress * cfg.speed));
-        const currentZ = cfg.startZ + (cfg.endZ - cfg.startZ) * cardProgress;
-
-        let opacity = 0;
-        if (currentZ >= -1500 && currentZ < -380) {
-          opacity = (currentZ + 1500) / 1120;
-        } else if (currentZ >= -380 && currentZ <= 300) {
-          opacity = 1;
-        } else if (currentZ > 300 && currentZ < 450) {
-          opacity = 1 - (currentZ - 300) / 150;
-        }
-
-        const el = item.el;
-        if (opacity <= 0.01) {
-          if (item.isVisible) {
-            el.style.opacity = '0';
-            el.style.visibility = 'hidden';
-            item.isVisible = false;
-          }
-          continue;
-        }
-
-        if (!item.isVisible) {
-          el.style.visibility = 'visible';
-          item.isVisible = true;
-        }
-
-        const currentX = cfg.baseX + Math.sin(cardProgress * Math.PI) * 40;
-        const currentY = cfg.baseY + (1 - cardProgress) * 60;
-        const currentRotX = cfg.rotX * (1 - cardProgress * 0.7);
-        const currentRotY = cfg.rotY * (1 - cardProgress * 0.7);
-        const currentRotZ = cfg.rotZ * (1 - cardProgress * 0.5);
-
-        el.style.transform = `translate3d(${currentX.toFixed(1)}px, ${currentY.toFixed(1)}px, ${currentZ.toFixed(1)}px) rotateX(${currentRotX.toFixed(1)}deg) rotateY(${currentRotY.toFixed(1)}deg) rotateZ(${currentRotZ.toFixed(1)}deg)`;
-        el.style.opacity = opacity > 0.99 ? '1' : opacity.toFixed(2);
-      }
+    if (window.gsap && gsap.ticker) {
+      gsap.ticker.add(tickTunnel);
+    } else {
+      (function fallbackLoop() {
+        tickTunnel();
+        requestAnimationFrame(fallbackLoop);
+      })();
     }
 
-    // Unified scroll listener
+    // Unified scroll listener for Section 2 kinetic morph & water canvas throttle
     let scrollTicking = false;
     let lastScrollTimestamp = 0;
     window.addEventListener('scroll', () => {
@@ -4017,17 +4061,15 @@
       requestAnimationFrame(() => {
         scrollTicking = false;
         applyScrollKineticMorph();
-        applyGalleryScrollReveal();
       });
     }, { passive: true });
 
     window.addEventListener('resize', () => {
       applyScrollKineticMorph(true);
-      applyGalleryScrollReveal(true);
     });
 
     applyScrollKineticMorph();
-    applyGalleryScrollReveal();
+    tickTunnel();
 
     // =========================================================================
     // 6. OCEAN BAG & FLYING DROPLET
