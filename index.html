@@ -1340,38 +1340,40 @@
 
     /* ============================================================
        SECTION 3: 3D SCROLL TUNNEL (My Seven Ocean Oceanic Theme)
-       Infinite 6-ring × 4-plate ellipse tunnel with depth veil & velocity speed-smear
+       Ultra-smooth GPU-composited 6-ring 3D tunnel with zero layout/style thrash
        ============================================================ */
     .gallery-scroll-container {
       --tunnel-bg: #e6f4fe;
       --tunnel-ink: #071c2b;
       --tunnel-dim: #476882;
       --tunnel-accent: #0284c7;
-      --tunnel-cyan: #06b6d4;
-      --tunnel-teal: #2dd4bf;
       position: relative;
-      width: 100vw;
-      height: 360vh; /* Pinned scroll runway while wheel drives infinite tunnel */
+      width: 100%;
+      height: 340vh;
       z-index: 35;
-      background: transparent;
+      background: var(--tunnel-bg);
+      border-top: 1px solid rgba(14, 165, 233, 0.18);
+      border-bottom: 1px solid rgba(14, 165, 233, 0.18);
     }
 
     .gallery-sticky-stage.spotlight {
       position: sticky;
       top: 0;
       width: 100%;
-      height: 100svh;
+      height: 100vh;
       background-color: var(--tunnel-bg);
       background-image:
-        radial-gradient(46% 42% at 22% 18%, rgba(2, 132, 199, 0.18) 0%, transparent 100%),
-        radial-gradient(42% 38% at 80% 26%, rgba(56, 189, 248, 0.20) 0%, transparent 100%),
-        radial-gradient(50% 44% at 62% 84%, rgba(6, 182, 212, 0.18) 0%, transparent 100%);
-      perspective: 1000px;
-      perspective-origin: 50% 50%;
+        radial-gradient(48% 44% at 50% 56%, rgba(255, 255, 255, 0.92) 0%, rgba(224, 242, 254, 0.45) 48%, transparent 100%),
+        radial-gradient(46% 42% at 20% 22%, rgba(2, 132, 199, 0.15) 0%, transparent 100%),
+        radial-gradient(44% 40% at 82% 78%, rgba(6, 182, 212, 0.16) 0%, transparent 100%);
+      perspective: 1100px;
+      perspective-origin: 50% 56%;
       overflow: hidden;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 78px;
       contain: layout paint;
     }
 
@@ -1379,22 +1381,36 @@
     .tunnel-vignette {
       position: absolute;
       inset: 0;
-      z-index: 5;
+      z-index: 6;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(230, 244, 254, 0.88) 0%, transparent 16%, transparent 84%, rgba(230, 244, 254, 0.88) 100%),
-        linear-gradient(90deg, rgba(230, 244, 254, 0.72) 0%, transparent 14%, transparent 86%, rgba(230, 244, 254, 0.72) 100%),
-        radial-gradient(85% 75% at 50% 50%, transparent 56%, rgba(218, 238, 253, 0.68) 100%);
+        linear-gradient(180deg, rgba(230, 244, 254, 0.95) 0%, rgba(230, 244, 254, 0.55) 18%, transparent 32%, transparent 86%, rgba(230, 244, 254, 0.92) 100%),
+        radial-gradient(88% 78% at 50% 56%, transparent 58%, rgba(214, 236, 252, 0.75) 100%);
     }
 
-    /* Center Impactful Editorial Title & Chrome */
-    .gallery-center-headline {
+    /* Subtle Oceanic Portal Rings at Tunnel Vanishing Point */
+    .tunnel-portal-glow {
       position: absolute;
-      top: 50%;
+      top: 56%;
       left: 50%;
-      transform: translate3d(-50%, -50%, 0);
+      width: 340px;
+      height: 220px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px dashed rgba(2, 132, 199, 0.22);
+      box-shadow:
+        0 0 0 48px rgba(14, 165, 233, 0.04),
+        0 0 0 110px rgba(14, 165, 233, 0.025),
+        inset 0 0 60px rgba(56, 189, 248, 0.14);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Top Editorial Header Bar (Cleanly separated above the 3D Tunnel so cards & text never mix) */
+    .gallery-center-headline {
+      position: relative;
       text-align: center;
-      width: min(640px, 88vw);
+      width: min(760px, 92vw);
       z-index: 20;
       pointer-events: none;
     }
@@ -1403,26 +1419,26 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 18px;
+      padding: 5px 16px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(14, 165, 233, 0.28);
-      box-shadow: 0 10px 28px rgba(8, 47, 73, 0.08);
+      box-shadow: 0 8px 22px rgba(8, 47, 73, 0.06);
       color: #0369a1;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .gallery-title-main {
-      font-size: clamp(2.3rem, 4.4vw, 4rem);
+      font-size: clamp(1.85rem, 3.2vw, 2.75rem);
       font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
       color: #071c2b;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
       text-transform: uppercase;
     }
 
@@ -1433,11 +1449,11 @@
     }
 
     .gallery-subtitle {
-      font-size: clamp(0.9rem, 1.08vw, 1.04rem);
+      font-size: clamp(0.84rem, 0.98vw, 0.95rem);
       color: var(--text-muted);
-      max-width: 540px;
-      margin: 0 auto 14px;
-      line-height: 1.55;
+      max-width: 580px;
+      margin: 0 auto 10px;
+      line-height: 1.45;
       font-weight: 500;
     }
 
@@ -1445,11 +1461,12 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      padding: 6px 18px;
+      padding: 5px 16px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(14, 165, 233, 0.24);
-      font-size: 11.5px;
+      box-shadow: 0 6px 18px rgba(7, 36, 56, 0.06);
+      font-size: 11px;
       font-weight: 700;
       color: #0369a1;
     }
@@ -1469,55 +1486,53 @@
       border-radius: 999px;
     }
 
-    /* 3D Scroll Tunnel Container (.tunnel) */
+    /* 3D Scroll Tunnel Container (.tunnel) centered in open stage below header */
     .tunnel {
       position: absolute;
-      top: 50%;
+      top: 57%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
       transform-style: preserve-3d;
-      z-index: 4;
+      z-index: 10;
       pointer-events: none;
     }
 
-    /* Each Depth Ring (.layer) */
+    /* Each Depth Ring (.layer) — GPU-composited as a single cached layer per ring */
     .tunnel .layer {
       position: absolute;
-      transform-style: preserve-3d;
-      will-change: transform;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      will-change: transform, opacity;
+      pointer-events: none;
     }
 
-    /* Each 180×220 px Elliptical Plate (.item) with Rotate–Scale–Unrotate Speed Smear */
+    /* Each 190×230 px Product Plate (.item) */
     .tunnel .item {
       position: absolute;
-      width: 180px;
-      height: 220px;
-      border-radius: 20px;
+      width: 190px;
+      height: 230px;
+      border-radius: 22px;
       overflow: hidden;
-      background: linear-gradient(150deg, rgba(255, 255, 255, 0.97) 0%, rgba(235, 248, 255, 0.93) 100%);
-      border: 1.5px solid rgba(255, 255, 255, 0.96);
-      box-shadow: 0 14px 32px rgba(7, 36, 56, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      background: linear-gradient(155deg, #ffffff 0%, #f0f9ff 100%);
+      border: 1.5px solid rgba(14, 165, 233, 0.22);
+      box-shadow: 0 14px 30px rgba(7, 36, 56, 0.10);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 12px 14px;
       pointer-events: auto;
       cursor: pointer;
-      transform: rotate(var(--tilt, 0deg))
-                 scale(var(--stretch, 1), var(--squash, 1))
-                 rotate(calc(-1 * var(--tilt, 0deg)));
-      will-change: transform;
       backface-visibility: hidden;
+      contain: layout paint style;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease;
     }
 
-    /* Hue-neutral inner vignette that seats the product plate in the oceanic stage */
-    .tunnel .item::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background: radial-gradient(120% 100% at 50% 45%, transparent 45%, rgba(14, 116, 144, 0.12) 100%);
+    .tunnel .item:hover {
+      border-color: rgba(2, 132, 199, 0.65);
+      box-shadow: 0 18px 38px rgba(2, 132, 199, 0.22);
     }
 
     .tunnel .item-header {
@@ -1534,9 +1549,9 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--tile-color, #0284c7);
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(240, 249, 255, 0.95);
       border: 1px solid rgba(14, 165, 233, 0.22);
     }
 
@@ -1554,16 +1569,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4px 0;
+      padding: 6px 0;
       min-height: 0;
     }
 
     .tunnel .item img {
       width: 100%;
       height: 100%;
-      max-height: 128px;
+      max-height: 126px;
       object-fit: contain;
-      filter: contrast(1.06) saturate(1.06);
       user-select: none;
       -webkit-user-drag: none;
     }
@@ -1582,7 +1596,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
     .tunnel .item-price-row {
@@ -1600,20 +1614,14 @@
       color: var(--tile-color, #0284c7);
     }
 
-    /* Oceanic Depth Veil driven by --overlay (1 in far depths -> 0 at camera -> 1 past lens) */
-    .tunnel .item-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      background: var(--tunnel-bg, #e6f4fe);
-      opacity: var(--overlay, 1);
-      pointer-events: none;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
+    @media (max-width: 768px) {
       .tunnel .item {
-        transform: none;
-        will-change: auto;
+        width: 150px;
+        height: 190px;
+        padding: 10px;
+      }
+      .tunnel .item img {
+        max-height: 96px;
       }
     }
 
