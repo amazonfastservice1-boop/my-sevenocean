@@ -4884,15 +4884,14 @@
           .to('#sectionOwnBrands .header', { bottom: 0 }, '<')
           .to('#sectionOwnBrands .item-copy-wrapper p', { y: 0, stagger: 0.05 }, '<');
 
-        let ownBrandsPlayed = false;
         ScrollTrigger.create({
           trigger: '#sectionOwnBrands',
           start: 'top 75%',
           onEnter: () => {
-            if (!ownBrandsPlayed) {
-              ownBrandsPlayed = true;
-              ownBrandsTl.play();
-            }
+            ownBrandsTl.restart();
+          },
+          onEnterBack: () => {
+            ownBrandsTl.restart();
           }
         });
       }
