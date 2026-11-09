@@ -3873,36 +3873,20 @@
     }
 
     // =========================================================================
-    // 5. SECTION 3: 3D SCROLL TUNNEL (Infinite Elliptical Rings + Speed Smear)
-    //    6 depth rings × 4 product plates on an ellipse, driven by gsap.ticker
+    // 5. SECTION 3: 3D SCROLL TUNNEL (Pure GPU Compositor — 6 Rings × 4 Plates)
+    //    Zero CSS-var subtree thrash, safe z-bounds (< perspective), sleeps when idle
     // =========================================================================
     const sectionGalleryTrigger = document.getElementById('sectionGalleryTrigger');
     const tunnelEl = document.getElementById('gallery3dSpace');
     const galleryProgressFill = document.getElementById('galleryProgressFill');
     const galleryPctLabel = document.getElementById('galleryPctLabel');
-    const galleryCenterHeadline = document.getElementById('galleryCenterHeadline');
 
-    const CONFIG = { totalImages: 12, scrollSpeed: 2, layerGap: 2500, lerp: 0.07, speedStretch: 0.3 };
-
-    // Speed-smear tuning (module constants)
-    const VELOCITY_LERP     = 0.12;
-    const VELOCITY_REF      = 35;
-    const VELOCITY_DEADZONE = 0.4;
-    const SQUASH_RATIO      = 0.45;
-    const MAX_DEFORM        = 0.6;
-
-    // Derived tunnel counts
-    const contentLayerCount = Math.ceil(CONFIG.totalImages / 4); // 3 unique rings of 4 images
-    const totalLayerCount   = Math.max(contentLayerCount, 6);    // 6 rings rendered
-    const tunnelDepth       = totalLayerCount * CONFIG.layerGap; // 15000 (modulo wrap length)
-    const visibleDepth      = 3 * CONFIG.layerGap;               // 7500  (fade-in distance)
-    const exitPoint         = 1500;                              // where a ring exits past the lens
-    const initialScroll     = 750;                               // starting virtual-scroll offset
-
-    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const stretchBudget = prefersReducedMotion
-      ? 0
-      : Math.max(0, Math.min(MAX_DEFORM, CONFIG.speedStretch));
+    const totalLayerCount = 6;
+    const layerGap        = 520;                        // Safe spacing for 1100px perspective
+    const tunnelDepth     = totalLayerCount * layerGap; // 3120 total loop depth
+    const visibleDepth    = 2350;                       // Smooth fade-in horizon
+    const exitPoint       = 360;                        // Exits safely before 1100px lens (max scale ~1.48x)
+    const initialScroll   = 260;
 
     const layerData = [];
 
@@ -3910,37 +3894,40 @@
       tunnelEl.innerHTML = '';
       layerData.length = 0;
 
-      const radiusX = 400;
-      const radiusY = 280;
+      const isMobile = window.innerWidth <= 768;
+      const evenAnglesDeg = [-30, 30, 150, 210];
+      const oddAnglesDeg  = [-56, 56, 124, 236];
 
       for (let i = 0; i < totalLayerCount; i++) {
         const layerEl = document.createElement('div');
         layerEl.className = 'layer';
-        const imageStartIndex = (i % contentLayerCount) * 4;
+
+        const angles = (i % 2 === 0) ? evenAnglesDeg : oddAnglesDeg;
+        const radiusX = isMobile ? 165 : ((i % 2 === 0) ? 405 : 355);
+        const radiusY = isMobile ? 155 : ((i % 2 === 0) ? 175 : 215);
+        const halfW = isMobile ? 75 : 95;
+        const halfH = isMobile ? 95 : 115;
 
         for (let j = 0; j < 4; j++) {
-          const imageNumber = imageStartIndex + j + 1;
-          if (imageNumber > CONFIG.totalImages) break;
-
-          const product = SECTION3_PRODUCTS[(imageNumber - 1) % SECTION3_PRODUCTS.length];
-          const angle = (j / 4) * Math.PI * 2 - Math.PI / 2;
-          const itemX = Math.cos(angle) * radiusX - 90;
-          const itemY = Math.sin(angle) * radiusY - 110;
+          const itemIdx = (i * 4 + j) % SECTION3_PRODUCTS.length;
+          const product = SECTION3_PRODUCTS[itemIdx];
+          const rad = (angles[j] * Math.PI) / 180;
+          const itemX = Math.round(Math.cos(rad) * radiusX - halfW);
+          const itemY = Math.round(Math.sin(rad) * radiusY - halfH);
 
           const itemEl = document.createElement('div');
           itemEl.className = 'item';
           itemEl.style.left = `${itemX}px`;
           itemEl.style.top = `${itemY}px`;
-          itemEl.style.setProperty('--tilt', `${(angle * 180) / Math.PI}deg`);
           itemEl.style.setProperty('--tile-color', product.color);
 
           itemEl.innerHTML = `
             <div class="item-header">
               <span class="item-tag">${product.tag}</span>
-              <span class="item-num">#${String(imageNumber).padStart(2, '0')}</span>
+              <span class="item-num">#${String(itemIdx + 1).padStart(2, '0')}</span>
             </div>
             <div class="item-img-wrap">
-              <img src="${product.img}" alt="${product.name}" loading="eager" decoding="async" draggable="false" />
+              <img src="${product.img}" alt="${product.name}" loading="lazy" decoding="async" draggable="false" />
             </div>
             <div class="item-footer">
               <div class="item-name">${product.name}</div>
@@ -3949,13 +3936,12 @@
                 <span class="item-price">${product.price}</span>
               </div>
             </div>
-            <div class="item-overlay"></div>
           `;
 
-          itemEl.addEventListener('mouseenter', () => playWaterDrop(420 + (imageNumber - 1) * 22));
+          itemEl.addEventListener('mouseenter', () => playWaterDrop(420 + itemIdx * 18));
           itemEl.addEventListener('click', () => {
             addToRitualBag({
-              id: `tunnel-${imageNumber}`,
+              id: `tunnel-${itemIdx + 1}`,
               variant: product.name,
               price: product.price,
               priceNum: product.num,
@@ -3967,99 +3953,103 @@
         }
 
         tunnelEl.appendChild(layerEl);
-        layerData.push({ el: layerEl, baseZ: -i * CONFIG.layerGap });
+        layerData.push({
+          el: layerEl,
+          baseZ: -i * layerGap,
+          lastVis: ''
+        });
       }
     }
 
     initSection3Tunnel();
 
-    function calculateOverlay(z) {
-      if (z > exitPoint) return 1;                 // z > 1500: past the lens -> fully veiled
-      if (z > 0) return z / exitPoint;             // 0 < z < 1500: veiling as it exits (0 -> 1)
-      if (z > -visibleDepth) {                     // -7500 < z < 0: fading IN from the depths
-        const progress = Math.abs(z) / visibleDepth;
-        return progress * progress;                // QUADRATIC ease-in of the depth veil
+    function calculateLayerAlpha(z) {
+      if (z >= exitPoint) return 0;
+      if (z > 0) return 1 - (z / exitPoint);
+      if (z > -visibleDepth) {
+        const t = 1 - (Math.abs(z) / visibleDepth);
+        return t * t;
       }
-      return 1;                                    // z <= -7500: too far -> fully veiled
+      return 0;
     }
 
     let targetScroll     = initialScroll;
     let currentScroll    = initialScroll;
     let smoothedVelocity = 0;
     let lastGalleryPct   = -1;
-    let touchLastY       = 0;
+    let tunnelRafId      = null;
 
-    window.addEventListener('wheel', (e) => {
-      targetScroll += e.deltaY * CONFIG.scrollSpeed;
-    }, { passive: true });
+    function renderTunnelFrame() {
+      const prev = currentScroll;
+      const diff = targetScroll - currentScroll;
+      currentScroll += diff * 0.11;
+      smoothedVelocity += ((currentScroll - prev) - smoothedVelocity) * 0.15;
 
-    window.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 0) {
-        touchLastY = e.touches[0].clientY;
-      }
-    }, { passive: true });
+      const speedDeform = Math.min(0.12, (Math.abs(smoothedVelocity) / 45) * 0.12);
 
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches.length > 0) {
-        const curY = e.touches[0].clientY;
-        const deltaY = touchLastY - curY;
-        touchLastY = curY;
-        targetScroll += deltaY * CONFIG.scrollSpeed * 1.5;
-      }
-    }, { passive: true });
-
-    function tickTunnel() {
-      const previousScroll = currentScroll;
-      currentScroll += (targetScroll - currentScroll) * CONFIG.lerp;
-      smoothedVelocity += (currentScroll - previousScroll - smoothedVelocity) * VELOCITY_LERP;
-      if (Math.abs(smoothedVelocity) < VELOCITY_DEADZONE) smoothedVelocity = 0;
-      const speed = Math.min(1, Math.abs(smoothedVelocity) / VELOCITY_REF);
-
-      // Update active catalog progress indicator from infinite tunnel cycle
-      const cyclePct = Math.round(((((currentScroll - initialScroll) % tunnelDepth) + tunnelDepth) % tunnelDepth) / tunnelDepth * 100);
-      if (cyclePct !== lastGalleryPct) {
-        lastGalleryPct = cyclePct;
-        galleryProgressFill.style.width = `${cyclePct}%`;
-        galleryPctLabel.textContent = `${cyclePct}% Browsed`;
-      }
-
-      layerData.forEach((layer) => {
+      for (let i = 0; i < layerData.length; i++) {
+        const layer = layerData[i];
         let z = layer.baseZ + currentScroll;
         z = ((z % tunnelDepth) + tunnelDepth) % tunnelDepth;
         z = z - tunnelDepth + exitPoint;
 
-        const overlay = calculateOverlay(z);
-        const proximity = Math.min(1, Math.max(0, (z + visibleDepth) / (visibleDepth + exitPoint)));
-        const deform = speed * stretchBudget * proximity;
-
-        if (window.gsap) {
-          gsap.set(layer.el, {
-            z: z,
-            '--overlay': Math.min(1, Math.max(0, overlay)),
-            '--stretch': 1 + deform,
-            '--squash': 1 - deform * SQUASH_RATIO,
-            visibility: overlay >= 1 ? 'hidden' : 'visible'
-          });
-        } else {
-          layer.el.style.transform = `translate3d(0px, 0px, ${z.toFixed(1)}px)`;
-          layer.el.style.setProperty('--overlay', String(Math.min(1, Math.max(0, overlay))));
-          layer.el.style.setProperty('--stretch', String(1 + deform));
-          layer.el.style.setProperty('--squash', String(1 - deform * SQUASH_RATIO));
-          layer.el.style.visibility = overlay >= 1 ? 'hidden' : 'visible';
+        const alpha = calculateLayerAlpha(z);
+        if (alpha <= 0.01) {
+          if (layer.lastVis !== 'hidden') {
+            layer.lastVis = 'hidden';
+            layer.el.style.visibility = 'hidden';
+            layer.el.style.opacity = '0';
+          }
+          continue;
         }
-      });
+
+        if (layer.lastVis !== 'visible') {
+          layer.lastVis = 'visible';
+          layer.el.style.visibility = 'visible';
+        }
+
+        const proximity = Math.min(1, Math.max(0, (z + visibleDepth) / (visibleDepth + exitPoint)));
+        const sx = 1 + speedDeform * proximity;
+        const sy = 1 - speedDeform * 0.4 * proximity;
+
+        layer.el.style.transform = `translate3d(0px, 0px, ${z.toFixed(1)}px) scale(${sx.toFixed(3)}, ${sy.toFixed(3)})`;
+        layer.el.style.opacity = alpha.toFixed(3);
+      }
+
+      if (Math.abs(targetScroll - currentScroll) > 0.15 || Math.abs(smoothedVelocity) > 0.1) {
+        tunnelRafId = requestAnimationFrame(renderTunnelFrame);
+      } else {
+        tunnelRafId = null;
+      }
     }
 
-    if (window.gsap && gsap.ticker) {
-      gsap.ticker.add(tickTunnel);
-    } else {
-      (function fallbackLoop() {
-        tickTunnel();
-        requestAnimationFrame(fallbackLoop);
-      })();
+    function applyGalleryScrollReveal(force) {
+      if (!sectionGalleryTrigger) return;
+      const rect = sectionGalleryTrigger.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (!force && (rect.bottom < -120 || rect.top > vh + 120)) return;
+
+      const totalScrollable = Math.max(1, rect.height - vh);
+      const progress = Math.max(0, Math.min(1, -rect.top / totalScrollable));
+
+      const pctDisplay = Math.round(progress * 100);
+      if (pctDisplay !== lastGalleryPct) {
+        lastGalleryPct = pctDisplay;
+        galleryProgressFill.style.width = `${pctDisplay}%`;
+        galleryPctLabel.textContent = `${pctDisplay}% Browsed`;
+      }
+
+      targetScroll = initialScroll + progress * (tunnelDepth * 1.15);
+      if (force) {
+        currentScroll = targetScroll;
+        smoothedVelocity = 0;
+        renderTunnelFrame();
+      } else if (!tunnelRafId) {
+        tunnelRafId = requestAnimationFrame(renderTunnelFrame);
+      }
     }
 
-    // Unified scroll listener for Section 2 kinetic morph & water canvas throttle
+    // Unified scroll listener for Section 2 kinetic morph & Section 3 tunnel
     let scrollTicking = false;
     let lastScrollTimestamp = 0;
     window.addEventListener('scroll', () => {
@@ -4069,15 +4059,17 @@
       requestAnimationFrame(() => {
         scrollTicking = false;
         applyScrollKineticMorph();
+        applyGalleryScrollReveal();
       });
     }, { passive: true });
 
     window.addEventListener('resize', () => {
       applyScrollKineticMorph(true);
+      applyGalleryScrollReveal(true);
     });
 
-    applyScrollKineticMorph();
-    tickTunnel();
+    applyScrollKineticMorph(true);
+    applyGalleryScrollReveal(true);
 
     // =========================================================================
     // 6. OCEAN BAG & FLYING DROPLET
